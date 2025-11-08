@@ -37,16 +37,15 @@
             background: linear-gradient(45deg, #00d4ff, #ff00ea);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
         }
 
         .nav-buttons {
             display: flex;
             gap: 1rem;
-            z-index: 101;
+            align-items: center;
         }
 
-        .nav-buttons button {
+        .nav-buttons button, .btn-nav {
             background: linear-gradient(45deg, #00d4ff, #ff00ea);
             border: none;
             color: white;
@@ -56,23 +55,47 @@
             font-weight: 600;
             transition: all 0.3s;
             box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
-            position: relative;
-            z-index: 102;
         }
 
-        .nav-buttons button:hover {
+        .nav-buttons button:hover, .btn-nav:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0, 212, 255, 0.6);
-        }
-
-        .nav-buttons button:active {
-            transform: translateY(0);
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
+        }
+
+        .search-bar {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1rem;
+            border-radius: 25px;
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .search-bar input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #00d4ff;
+            font-size: 1.2rem;
         }
 
         .user-info {
@@ -102,6 +125,7 @@
             cursor: pointer;
             transition: all 0.4s ease;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
         }
 
         .game-card:hover {
@@ -114,7 +138,6 @@
             width: 100%;
             height: 200px;
             object-fit: cover;
-            background: linear-gradient(45deg, #00d4ff, #0f3460);
         }
 
         .game-info {
@@ -132,6 +155,28 @@
             margin-bottom: 0.5rem;
         }
 
+        .admin-actions {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .admin-btn {
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .admin-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -139,10 +184,11 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             z-index: 1000;
             align-items: center;
             justify-content: center;
+            overflow-y: auto;
         }
 
         .modal-content {
@@ -156,6 +202,7 @@
             position: relative;
             border: 2px solid rgba(0, 212, 255, 0.3);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            margin: 2rem auto;
         }
 
         .close-modal {
@@ -171,6 +218,7 @@
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.3s;
+            z-index: 10;
         }
 
         .close-modal:hover {
@@ -184,7 +232,7 @@
             gap: 1rem;
         }
 
-        .auth-form input {
+        .auth-form input, .auth-form textarea {
             padding: 1rem;
             border-radius: 10px;
             border: 2px solid rgba(255, 255, 255, 0.3);
@@ -193,7 +241,7 @@
             font-size: 1rem;
         }
 
-        .auth-form input::placeholder {
+        .auth-form input::placeholder, .auth-form textarea::placeholder {
             color: rgba(255, 255, 255, 0.6);
         }
 
@@ -215,6 +263,10 @@
             box-shadow: 0 6px 20px rgba(0, 212, 255, 0.6);
         }
 
+        .btn-danger {
+            background: linear-gradient(45deg, #ff4444, #cc0000);
+        }
+
         .google-btn {
             background: white;
             color: #333;
@@ -224,17 +276,39 @@
             gap: 0.5rem;
         }
 
-        .admin-panel {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            padding: 2rem;
-            border-radius: 20px;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(0, 212, 255, 0.2);
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
         }
 
-        .admin-panel h2 {
-            margin-bottom: 1.5rem;
+        .file-upload input[type="file"] {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-upload-label {
+            display: block;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-upload-label:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(0, 212, 255, 0.5);
+        }
+
+        .file-name {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
             color: #00d4ff;
         }
 
@@ -247,6 +321,20 @@
             padding: 1rem;
             border-radius: 10px;
             margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .delete-review-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(255, 0, 0, 0.7);
+            border: none;
+            color: white;
+            padding: 0.3rem 0.7rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
         }
 
         .stars {
@@ -270,8 +358,24 @@
             resize: vertical;
         }
 
-        textarea::placeholder {
-            color: rgba(255, 255, 255, 0.6);
+        .settings-section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .settings-section h3 {
+            color: #00d4ff;
+            margin-bottom: 1rem;
+        }
+
+        .no-games {
+            text-align: center;
+            padding: 3rem;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.2rem;
         }
     </style>
 </head>
@@ -279,6 +383,8 @@
     <div class="header">
         <div class="logo">🎮 KRASLEY GAMES</div>
         <div class="nav-buttons">
+            <button id="adminPanelBtn" class="hidden">⚙️ Panel Admin</button>
+            <button id="settingsBtn" class="hidden">👤 Paramètres</button>
             <button id="loginBtn">Connexion</button>
             <button id="logoutBtn" class="hidden">Déconnexion</button>
         </div>
@@ -292,24 +398,20 @@
             </div>
         </div>
 
-        <div id="adminPanel" class="admin-panel hidden">
-            <h2>🛠️ Panel Administrateur</h2>
-            <form id="addGameForm" class="auth-form">
-                <input type="text" id="gameTitle" placeholder="Titre du jeu" required>
-                <input type="url" id="gameImage" placeholder="URL de l'image" required>
-                <textarea id="gameDescription" placeholder="Description" rows="4" required></textarea>
-                <input type="url" id="gameDownloadUrl" placeholder="URL de téléchargement" required>
-                <button type="submit" class="btn-primary">Publier le jeu</button>
-            </form>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="🔍 Rechercher un jeu...">
+            <span class="search-icon">🔎</span>
         </div>
 
-        <div class="games-grid" id="gamesGrid"></div>
+        <div class="games-grid" id="gamesGrid">
+            <div class="no-games">Aucun jeu disponible pour le moment</div>
+        </div>
     </div>
 
     <!-- Modal de connexion -->
     <div id="authModal" class="modal">
         <div class="modal-content">
-            <button class="close-modal" onclick="closeAuthModal()">×</button>
+            <button class="close-modal" onclick="closeModal('authModal')">×</button>
             <h2>Connexion</h2>
             <form id="emailLoginForm" class="auth-form">
                 <input type="email" id="emailInput" placeholder="Email" required>
@@ -330,10 +432,41 @@
         </div>
     </div>
 
+    <!-- Modal Admin Panel -->
+    <div id="adminModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('adminModal')">×</button>
+            <h2>🛠️ Panel Administrateur</h2>
+            <form id="addGameForm" class="auth-form">
+                <input type="text" id="gameTitle" placeholder="Titre du jeu" required>
+                
+                <div class="file-upload">
+                    <label class="file-upload-label" for="gameImageFile">
+                        📷 Sélectionner une image
+                        <div class="file-name" id="imageFileName"></div>
+                    </label>
+                    <input type="file" id="gameImageFile" accept="image/*">
+                </div>
+
+                <textarea id="gameDescription" placeholder="Description" rows="4" required></textarea>
+                
+                <div class="file-upload">
+                    <label class="file-upload-label" for="gameZipFile">
+                        📦 Sélectionner le fichier .zip du jeu
+                        <div class="file-name" id="zipFileName"></div>
+                    </label>
+                    <input type="file" id="gameZipFile" accept=".zip">
+                </div>
+
+                <button type="submit" class="btn-primary" id="submitGameBtn">Publier le jeu</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Modal de jeu -->
     <div id="gameModal" class="modal">
         <div class="modal-content">
-            <button class="close-modal" onclick="closeGameModal()">×</button>
+            <button class="close-modal" onclick="closeModal('gameModal')">×</button>
             <img id="modalGameImage" style="width: 100%; border-radius: 10px; margin-bottom: 1rem;">
             <h2 id="modalGameTitle"></h2>
             <div class="game-rating" id="modalGameRating"></div>
@@ -361,23 +494,109 @@
         </div>
     </div>
 
+    <!-- Modal Paramètres -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('settingsModal')">×</button>
+            <h2>⚙️ Paramètres du compte</h2>
+            
+            <div class="settings-section">
+                <h3>Changer le pseudo</h3>
+                <div class="auth-form">
+                    <input type="text" id="newDisplayName" placeholder="Nouveau pseudo">
+                    <button class="btn-primary" id="updateNameBtn">Mettre à jour</button>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Changer l'email</h3>
+                <div class="auth-form">
+                    <input type="email" id="newEmail" placeholder="Nouvel email">
+                    <button class="btn-primary" id="updateEmailBtn">Mettre à jour</button>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Changer le mot de passe</h3>
+                <div class="auth-form">
+                    <input type="password" id="newPassword" placeholder="Nouveau mot de passe">
+                    <input type="password" id="confirmPassword" placeholder="Confirmer le mot de passe">
+                    <button class="btn-primary" id="updatePasswordBtn">Mettre à jour</button>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>⚠️ Zone dangereuse</h3>
+                <button class="btn-primary btn-danger" id="deleteAccountBtn">Supprimer le compte</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Game -->
+    <div id="editGameModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('editGameModal')">×</button>
+            <h2>✏️ Modifier le jeu</h2>
+            <form id="editGameForm" class="auth-form">
+                <input type="text" id="editGameTitle" placeholder="Titre du jeu" required>
+                
+                <div class="file-upload">
+                    <label class="file-upload-label" for="editGameImageFile">
+                        📷 Changer l'image (optionnel)
+                        <div class="file-name" id="editImageFileName"></div>
+                    </label>
+                    <input type="file" id="editGameImageFile" accept="image/*">
+                </div>
+
+                <textarea id="editGameDescription" placeholder="Description" rows="4" required></textarea>
+                
+                <div class="file-upload">
+                    <label class="file-upload-label" for="editGameZipFile">
+                        📦 Changer le fichier .zip (optionnel)
+                        <div class="file-name" id="editZipFileName"></div>
+                    </label>
+                    <input type="file" id="editGameZipFile" accept=".zip">
+                </div>
+
+                <button type="submit" class="btn-primary">Sauvegarder les modifications</button>
+            </form>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy, doc, updateDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, updateProfile, updateEmail, updatePassword, deleteUser } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy, doc, updateDoc, arrayUnion, deleteDoc, setDoc, arrayRemove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 
-        // Configuration Firebase (encodée pour sécurité)
         const config = atob('eyJhcGlLZXkiOiJBSXphU3lDUWthN3FMUUVYX0tONGp4aUxRR0Z2ZzdNSFBCMHF6cTAiLCJhdXRoRG9tYWluIjoia3Jhc2xleS00ZTFkYy5maXJlYmFzZWFwcC5jb20iLCJwcm9qZWN0SWQiOiJrcmFzbGV5LTRlMWRjIiwic3RvcmFnZUJ1Y2tldCI6ImtyYXNsZXktNGUxZGMuZmlyZWJhc2VzdG9yYWdlLmFwcCIsIm1lc3NhZ2luZ1NlbmRlcklkIjoiMzIyNDgxNDkwMDA5IiwiYXBwSWQiOiIxOjMyMjQ4MTQ5MDAwOTp3ZWI6MmJlZmE3ZTUxNzJmM2RhM2I5NDk0OCIsIm1lYXN1cmVtZW50SWQiOiJHLVBRQkhXUjZHVlQifQ==');
         const firebaseConfig = JSON.parse(config);
         
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const storage = getStorage(app);
         const ADMIN_EMAIL = atob('a3Jhc2xleXN0dWRpb0BnbWFpbC5jb20=');
 
         let currentUser = null;
         let currentGameId = null;
         let selectedRating = 0;
+        let allGames = [];
+        let editingGameId = null;
+
+        // File name display
+        document.getElementById('gameImageFile').addEventListener('change', (e) => {
+            document.getElementById('imageFileName').textContent = e.target.files[0]?.name || '';
+        });
+        document.getElementById('gameZipFile').addEventListener('change', (e) => {
+            document.getElementById('zipFileName').textContent = e.target.files[0]?.name || '';
+        });
+        document.getElementById('editGameImageFile').addEventListener('change', (e) => {
+            document.getElementById('editImageFileName').textContent = e.target.files[0]?.name || '';
+        });
+        document.getElementById('editGameZipFile').addEventListener('change', (e) => {
+            document.getElementById('editZipFileName').textContent = e.target.files[0]?.name || '';
+        });
 
         // Auth state observer
         onAuthStateChanged(auth, (user) => {
@@ -385,28 +604,43 @@
             if (user) {
                 document.getElementById('loginBtn').classList.add('hidden');
                 document.getElementById('logoutBtn').classList.remove('hidden');
+                document.getElementById('settingsBtn').classList.remove('hidden');
                 document.getElementById('userInfo').classList.remove('hidden');
                 document.getElementById('userName').textContent = user.displayName || user.email.split('@')[0];
                 document.getElementById('userEmail').textContent = user.email;
                 
                 if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-                    document.getElementById('adminPanel').classList.remove('hidden');
+                    document.getElementById('adminPanelBtn').classList.remove('hidden');
                 }
-                closeAuthModal();
+                closeModal('authModal');
             } else {
                 document.getElementById('loginBtn').classList.remove('hidden');
                 document.getElementById('logoutBtn').classList.add('hidden');
+                document.getElementById('settingsBtn').classList.add('hidden');
+                document.getElementById('adminPanelBtn').classList.add('hidden');
                 document.getElementById('userInfo').classList.add('hidden');
-                document.getElementById('adminPanel').classList.add('hidden');
             }
             loadGames();
         });
 
-        // Login/Register
+        // Navigation buttons
         document.getElementById('loginBtn').addEventListener('click', () => {
             document.getElementById('authModal').style.display = 'flex';
         });
 
+        document.getElementById('adminPanelBtn').addEventListener('click', () => {
+            document.getElementById('adminModal').style.display = 'flex';
+        });
+
+        document.getElementById('settingsBtn').addEventListener('click', () => {
+            document.getElementById('settingsModal').style.display = 'flex';
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            signOut(auth);
+        });
+
+        // Login/Register
         document.getElementById('emailLoginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('emailInput').value;
@@ -441,36 +675,165 @@
             }
         });
 
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            signOut(auth);
+        // Settings
+        document.getElementById('updateNameBtn').addEventListener('click', async () => {
+            const newName = document.getElementById('newDisplayName').value;
+            if (!newName) return alert('Veuillez entrer un pseudo');
+            try {
+                await updateProfile(currentUser, { displayName: newName });
+                alert('Pseudo mis à jour avec succès!');
+                location.reload();
+            } catch (error) {
+                alert('Erreur: ' + error.message);
+            }
         });
 
-        // Add game (admin)
+        document.getElementById('updateEmailBtn').addEventListener('click', async () => {
+            const newEmailValue = document.getElementById('newEmail').value;
+            if (!newEmailValue) return alert('Veuillez entrer un email');
+            try {
+                await updateEmail(currentUser, newEmailValue);
+                alert('Email mis à jour avec succès!');
+                location.reload();
+            } catch (error) {
+                alert('Erreur: ' + error.message + '. Vous devrez peut-être vous reconnecter.');
+            }
+        });
+
+        document.getElementById('updatePasswordBtn').addEventListener('click', async () => {
+            const newPass = document.getElementById('newPassword').value;
+            const confirmPass = document.getElementById('confirmPassword').value;
+            if (!newPass || !confirmPass) return alert('Veuillez remplir tous les champs');
+            if (newPass !== confirmPass) return alert('Les mots de passe ne correspondent pas');
+            try {
+                await updatePassword(currentUser, newPass);
+                alert('Mot de passe mis à jour avec succès!');
+            } catch (error) {
+                alert('Erreur: ' + error.message + '. Vous devrez peut-être vous reconnecter.');
+            }
+        });
+
+        document.getElementById('deleteAccountBtn').addEventListener('click', async () => {
+            if (!confirm('⚠️ ATTENTION! Êtes-vous sûr de vouloir supprimer votre compte? Cette action est irréversible!')) return;
+            if (!confirm('Dernière confirmation: Supprimer définitivement le compte?')) return;
+            try {
+                await deleteUser(currentUser);
+                alert('Compte supprimé avec succès');
+            } catch (error) {
+                alert('Erreur: ' + error.message + '. Vous devrez peut-être vous reconnecter pour effectuer cette action.');
+            }
+        });
+
+        // Add game
         document.getElementById('addGameForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
-                alert('Accès refusé');
-                return;
+                return alert('Accès refusé');
             }
-            
-            const gameData = {
-                title: document.getElementById('gameTitle').value,
-                image: document.getElementById('gameImage').value,
-                description: document.getElementById('gameDescription').value,
-                downloadUrl: document.getElementById('gameDownloadUrl').value,
-                reviews: [],
-                createdAt: new Date()
-            };
+
+            const title = document.getElementById('gameTitle').value;
+            const description = document.getElementById('gameDescription').value;
+            const imageFile = document.getElementById('gameImageFile').files[0];
+            const zipFile = document.getElementById('gameZipFile').files[0];
+
+            if (!imageFile || !zipFile) {
+                return alert('Veuillez sélectionner une image et un fichier .zip');
+            }
+
+            document.getElementById('submitGameBtn').textContent = 'Upload en cours...';
+            document.getElementById('submitGameBtn').disabled = true;
 
             try {
-                await addDoc(collection(db, 'games'), gameData);
+                // Upload image
+                const imageRef = ref(storage, `games/${Date.now()}_${imageFile.name}`);
+                await uploadBytes(imageRef, imageFile);
+                const imageUrl = await getDownloadURL(imageRef);
+
+                // Upload zip
+                const zipRef = ref(storage, `games/${Date.now()}_${zipFile.name}`);
+                await uploadBytes(zipRef, zipFile);
+                const zipUrl = await getDownloadURL(zipRef);
+
+                // Save to Firestore
+                await addDoc(collection(db, 'games'), {
+                    title,
+                    description,
+                    image: imageUrl,
+                    downloadUrl: zipUrl,
+                    reviews: [],
+                    createdAt: new Date()
+                });
+
                 alert('Jeu publié avec succès!');
                 document.getElementById('addGameForm').reset();
+                document.getElementById('imageFileName').textContent = '';
+                document.getElementById('zipFileName').textContent = '';
+                closeModal('adminModal');
+                loadGames();
+            } catch (error) {
+                alert('Erreur: ' + error.message);
+            } finally {
+                document.getElementById('submitGameBtn').textContent = 'Publier le jeu';
+                document.getElementById('submitGameBtn').disabled = false;
+            }
+        });
+
+        // Edit game
+        document.getElementById('editGameForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+                return alert('Accès refusé');
+            }
+
+            const title = document.getElementById('editGameTitle').value;
+            const description = document.getElementById('editGameDescription').value;
+            const imageFile = document.getElementById('editGameImageFile').files[0];
+            const zipFile = document.getElementById('editGameZipFile').files[0];
+
+            try {
+                const gameRef = doc(db, 'games', editingGameId);
+                const updateData = { title, description };
+
+                if (imageFile) {
+                    const imageRef = ref(storage, `games/${Date.now()}_${imageFile.name}`);
+                    await uploadBytes(imageRef, imageFile);
+                    updateData.image = await getDownloadURL(imageRef);
+                }
+
+                if (zipFile) {
+                    const zipRef = ref(storage, `games/${Date.now()}_${zipFile.name}`);
+                    await uploadBytes(zipRef, zipFile);
+                    updateData.downloadUrl = await getDownloadURL(zipRef);
+                }
+
+                await updateDoc(gameRef, updateData);
+                alert('Jeu modifié avec succès!');
+                closeModal('editGameModal');
                 loadGames();
             } catch (error) {
                 alert('Erreur: ' + error.message);
             }
         });
+
+        // Delete game
+        async function deleteGame(gameId) {
+            if (!confirm('Êtes-vous sûr de vouloir supprimer ce jeu?')) return;
+            try {
+                await deleteDoc(doc(db, 'games', gameId));
+                alert('Jeu supprimé avec succès!');
+                loadGames();
+            } catch (error) {
+                alert('Erreur: ' + error.message);
+            }
+        }
+
+        // Edit game modal
+        function openEditGameModal(gameId, game) {
+            editingGameId = gameId;
+            document.getElementById('editGameTitle').value = game.title;
+            document.getElementById('editGameDescription').value = game.description;
+            document.getElementById('editGameModal').style.display = 'flex';
+        }
 
         // Load games
         async function loadGames() {
@@ -481,26 +844,70 @@
                 const q = query(collection(db, 'games'), orderBy('createdAt', 'desc'));
                 const querySnapshot = await getDocs(q);
                 
+                allGames = [];
                 querySnapshot.forEach((doc) => {
-                    const game = doc.data();
-                    const avgRating = calculateAverageRating(game.reviews || []);
-                    
-                    const gameCard = document.createElement('div');
-                    gameCard.className = 'game-card';
-                    gameCard.innerHTML = `
-                        <img src="${game.image}" class="game-image" alt="${game.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22200%22%3E%3Crect fill=%22%2300d4ff%22 width=%22280%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2220%22 fill=%22white%22 text-anchor=%22middle%22 dy=%22.3em%22%3E${game.title}%3C/text%3E%3C/svg%3E'">
-                        <div class="game-info">
-                            <div class="game-title">${game.title}</div>
-                            <div class="game-rating">${displayStars(avgRating)} (${game.reviews?.length || 0} avis)</div>
-                        </div>
-                    `;
-                    gameCard.addEventListener('click', () => openGameModal(doc.id, game));
-                    gamesGrid.appendChild(gameCard);
+                    allGames.push({ id: doc.id, ...doc.data() });
                 });
+
+                displayGames(allGames);
             } catch (error) {
                 console.error('Erreur de chargement:', error);
+                gamesGrid.innerHTML = '<div class="no-games">Erreur de chargement des jeux</div>';
             }
         }
+
+        function displayGames(games) {
+            const gamesGrid = document.getElementById('gamesGrid');
+            gamesGrid.innerHTML = '';
+
+            if (games.length === 0) {
+                gamesGrid.innerHTML = '<div class="no-games">Aucun jeu trouvé</div>';
+                return;
+            }
+
+            games.forEach((game) => {
+                const avgRating = calculateAverageRating(game.reviews || []);
+                
+                const gameCard = document.createElement('div');
+                gameCard.className = 'game-card';
+                gameCard.innerHTML = `
+                    ${currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase() ? `
+                        <div class="admin-actions">
+                            <button class="admin-btn" onclick="editGame('${game.id}')">✏️</button>
+                            <button class="admin-btn" onclick="deleteGameBtn('${game.id}')">🗑️</button>
+                        </div>
+                    ` : ''}
+                    <img src="${game.image}" class="game-image" alt="${game.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22200%22%3E%3Crect fill=%22%2300d4ff%22 width=%22280%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2220%22 fill=%22white%22 text-anchor=%22middle%22 dy=%22.3em%22%3E${game.title}%3C/text%3E%3C/svg%3E'">
+                    <div class="game-info">
+                        <div class="game-title">${game.title}</div>
+                        <div class="game-rating">${displayStars(avgRating)} (${game.reviews?.length || 0} avis)</div>
+                    </div>
+                `;
+                gameCard.addEventListener('click', (e) => {
+                    if (!e.target.closest('.admin-actions')) {
+                        openGameModal(game.id, game);
+                    }
+                });
+                gamesGrid.appendChild(gameCard);
+            });
+        }
+
+        window.editGame = (gameId) => {
+            const game = allGames.find(g => g.id === gameId);
+            if (game) openEditGameModal(gameId, game);
+        };
+
+        window.deleteGameBtn = deleteGame;
+
+        // Search
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = allGames.filter(game => 
+                game.title.toLowerCase().includes(searchTerm) ||
+                game.description.toLowerCase().includes(searchTerm)
+            );
+            displayGames(filtered);
+        });
 
         function calculateAverageRating(reviews) {
             if (!reviews || reviews.length === 0) return 0;
@@ -524,22 +931,23 @@
             document.getElementById('modalGameRating').textContent = displayStars(calculateAverageRating(game.reviews || []));
             
             document.getElementById('downloadBtn').onclick = () => {
-                window.open(game.downloadUrl, '_blank');
+                const link = document.createElement('a');
+                link.href = game.downloadUrl;
+                link.download = game.title + '.zip';
+                link.click();
             };
 
             displayReviews(game.reviews || []);
         }
 
-        window.closeGameModal = () => {
-            document.getElementById('gameModal').style.display = 'none';
-            currentGameId = null;
-            selectedRating = 0;
-            document.getElementById('reviewText').value = '';
-            updateStarDisplay();
-        };
-
-        window.closeAuthModal = () => {
-            document.getElementById('authModal').style.display = 'none';
+        window.closeModal = (modalId) => {
+            document.getElementById(modalId).style.display = 'none';
+            if (modalId === 'gameModal') {
+                currentGameId = null;
+                selectedRating = 0;
+                document.getElementById('reviewText').value = '';
+                updateStarDisplay();
+            }
         };
 
         // Rating stars
@@ -559,17 +967,14 @@
         // Submit review
         document.getElementById('submitReviewBtn').addEventListener('click', async () => {
             if (!currentUser) {
-                alert('Vous devez être connecté pour laisser un avis');
-                return;
+                return alert('Vous devez être connecté pour laisser un avis');
             }
             if (selectedRating === 0) {
-                alert('Veuillez sélectionner une note');
-                return;
+                return alert('Veuillez sélectionner une note');
             }
             const reviewText = document.getElementById('reviewText').value.trim();
             if (!reviewText) {
-                alert('Veuillez écrire un avis');
-                return;
+                return alert('Veuillez écrire un avis');
             }
 
             const review = {
@@ -591,7 +996,6 @@
                 updateStarDisplay();
                 loadGames();
                 
-                // Refresh modal
                 const gameDoc = await getDocs(query(collection(db, 'games')));
                 gameDoc.forEach(d => {
                     if (d.id === currentGameId) {
@@ -602,6 +1006,27 @@
                 alert('Erreur: ' + error.message);
             }
         });
+
+        // Delete review
+        async function deleteReview(review) {
+            if (!confirm('Supprimer cet avis?')) return;
+            try {
+                const gameRef = doc(db, 'games', currentGameId);
+                await updateDoc(gameRef, {
+                    reviews: arrayRemove(review)
+                });
+                alert('Avis supprimé');
+                loadGames();
+                const gameDoc = await getDocs(query(collection(db, 'games')));
+                gameDoc.forEach(d => {
+                    if (d.id === currentGameId) {
+                        displayReviews(d.data().reviews || []);
+                    }
+                });
+            } catch (error) {
+                alert('Erreur: ' + error.message);
+            }
+        }
 
         function displayReviews(reviews) {
             const reviewsList = document.getElementById('reviewsList');
@@ -616,6 +1041,9 @@
                 const reviewItem = document.createElement('div');
                 reviewItem.className = 'review-item';
                 reviewItem.innerHTML = `
+                    ${currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase() ? `
+                        <button class="delete-review-btn" onclick="deleteReviewBtn(${JSON.stringify(review).replace(/"/g, '&quot;')})">Supprimer</button>
+                    ` : ''}
                     <strong>${review.userName}</strong> - ${displayStars(review.rating)}
                     <p>${review.text}</p>
                     <small>${review.date}</small>
@@ -623,6 +1051,8 @@
                 reviewsList.appendChild(reviewItem);
             });
         }
+
+        window.deleteReviewBtn = deleteReview;
     </script>
 </body>
 </html>
