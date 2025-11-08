@@ -809,9 +809,16 @@
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         import { getFirestore, collection, addDoc, getDocs, query, orderBy, doc, updateDoc, arrayUnion, deleteDoc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-        // Configuration Firebase (encodée pour sécurité)
-        const config = atob('eyJhcGlLZXkiOiJBSXphU3lDUWthN3FMUUVYX0tONGp4aUxRR0Z2ZzdNSFBCMHF6cTAiLCJhdXRoRG9tYWluIjoia3Jhc2xleS00ZTFkYy5maXJlYmFzZWFwcC5jb20iLCJwcm9qZWN0SWQiOiJrcmFzbGV5LTRlMWRjIiwic3RvcmFnZUJ1Y2tldCI6ImtyYXNsZXktNGUxZGMuZmlyZWJhc2VzdG9yYWdlLmFwcCIsIm1lc3NhZ2luZ1NlbmRlcklkIjoiMzIyNDgxNDkwMDA5IiwiYXBwSWQiOiIxOjMyMjQ4MTQ5MDAwOTp3ZWI6MmJlZmE3ZTUxNzJmM2RhM2I5NDk0OCIsIm1lYXN1cmVtZW50SWQiOiJHLVBRQkhXUjZHVlQifQ==');
-        const firebaseConfig = JSON.parse(config);
+        // Configuration Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCQka7qLQEX_KN4jxiLQGFvg7MHPBMqzq0",
+            authDomain: "krasley-4e1dc.firebaseapp.com",
+            projectId: "krasley-4e1dc",
+            storageBucket: "krasley-4e1dc.firebasestorage.app",
+            messagingSenderId: "322481490009",
+            appId: "1:322481490009:web:2befa7e5172f3da3b94948",
+            measurementId: "G-PQBHWR6GVT"
+        };
         
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
