@@ -40,13 +40,14 @@
         }
 
         .menu-toggle {
-            display: none;
+            display: block;
             background: transparent;
             border: none;
             color: white;
             font-size: 1.8rem;
             cursor: pointer;
             padding: 0.5rem;
+            z-index: 100;
         }
 
         .nav-buttons {
@@ -172,10 +173,6 @@
         @media (max-width: 768px) {
             .logo {
                 font-size: 1.2rem;
-            }
-
-            .menu-toggle {
-                display: block;
             }
 
             .nav-buttons {
@@ -569,12 +566,42 @@
 </head>
 <body>
     <div class="header">
+        <button class="menu-toggle" id="menuToggle">☰</button>
         <div class="logo">🎮 KRASLEY GAMES</div>
         <div class="nav-buttons">
             <button id="adminPanelBtn" class="hidden">⚙️ Panel Admin</button>
             <button id="settingsBtn" class="hidden">👤 Paramètres</button>
             <button id="loginBtn">Connexion</button>
             <button id="logoutBtn" class="hidden">Déconnexion</button>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">🎮 Menu</div>
+            <button class="sidebar-close" id="sidebarClose">×</button>
+        </div>
+        
+        <div id="sidebarUserInfo" class="sidebar-user-info hidden">
+            <div>Bienvenue, <strong id="sidebarUserName"></strong></div>
+            <div style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.3rem;" id="sidebarUserEmail"></div>
+        </div>
+
+        <div class="sidebar-menu">
+            <button id="sidebarLogin" class="hidden">
+                🔑 Connexion
+            </button>
+            <button id="sidebarSettings" class="hidden">
+                👤 Paramètres
+            </button>
+            <button id="sidebarAdminPanel" class="hidden">
+                ⚙️ Panel Admin
+            </button>
+            <button id="sidebarLogout" class="hidden">
+                🚪 Déconnexion
+            </button>
         </div>
     </div>
 
@@ -758,489 +785,3 @@
         import { getStorage, ref, uploadBytes, getDownloadURL } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js';
 
         const config = atob('eyJhcGlLZXkiOiJBSXphU3lDUWthN3FMUUVYX0tONGp4aUxRR0Z2ZzdNSFBCMHF6cTAiLCJhdXRoRG9tYWluIjoia3Jhc2xleS00ZTFkYy5maXJlYmFzZWFwcC5jb20iLCJwcm9qZWN0SWQiOiJrcmFzbGV5LTRlMWRjIiwic3RvcmFnZUJ1Y2tldCI6ImtyYXNsZXktNGUxZGMuZmlyZWJhc2VzdG9yYWdlLmFwcCIsIm1lc3NhZ2luZ1NlbmRlcklkIjoiMzIyNDgxNDkwMDA5IiwiYXBwSWQiOiIxOjMyMjQ4MTQ5MDAwOTp3ZWI6MmJlZmE3ZTUxNzJmM2RhM2I5NDk0OCIsIm1lYXN1cmVtZW50SWQiOiJHLVBRQkhXUjZHVlQifQ==');
-        const firebaseConfig = JSON.parse(config);
-        
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const storage = getStorage(app);
-        const ADMIN_EMAIL = atob('a3Jhc2xleXN0dWRpb0BnbWFpbC5jb20=');
-
-        let currentUser = null;
-        let currentGameId = null;
-        let selectedRating = 0;
-        let allGames = [];
-        let editingGameId = null;
-
-        // File name display
-        document.getElementById('gameImageFile').addEventListener('change', (e) => {
-            document.getElementById('imageFileName').textContent = e.target.files[0]?.name || '';
-        });
-        document.getElementById('gameZipFile').addEventListener('change', (e) => {
-            document.getElementById('zipFileName').textContent = e.target.files[0]?.name || '';
-        });
-        document.getElementById('editGameImageFile').addEventListener('change', (e) => {
-            document.getElementById('editImageFileName').textContent = e.target.files[0]?.name || '';
-        });
-        document.getElementById('editGameZipFile').addEventListener('change', (e) => {
-            document.getElementById('editZipFileName').textContent = e.target.files[0]?.name || '';
-        });
-
-        // Auth state observer
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            if (user) {
-                document.getElementById('loginBtn').classList.add('hidden');
-                document.getElementById('logoutBtn').classList.remove('hidden');
-                document.getElementById('settingsBtn').classList.remove('hidden');
-                document.getElementById('userInfo').classList.remove('hidden');
-                document.getElementById('userName').textContent = user.displayName || user.email.split('@')[0];
-                document.getElementById('userEmail').textContent = user.email;
-                
-                if (user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-                    document.getElementById('adminPanelBtn').classList.remove('hidden');
-                }
-                closeModal('authModal');
-            } else {
-                document.getElementById('loginBtn').classList.remove('hidden');
-                document.getElementById('logoutBtn').classList.add('hidden');
-                document.getElementById('settingsBtn').classList.add('hidden');
-                document.getElementById('adminPanelBtn').classList.add('hidden');
-                document.getElementById('userInfo').classList.add('hidden');
-            }
-            loadGames();
-        });
-
-        // Navigation buttons
-        document.getElementById('loginBtn').addEventListener('click', () => {
-            document.getElementById('authModal').style.display = 'flex';
-        });
-
-        document.getElementById('adminPanelBtn').addEventListener('click', () => {
-            document.getElementById('adminModal').style.display = 'flex';
-        });
-
-        document.getElementById('settingsBtn').addEventListener('click', () => {
-            document.getElementById('settingsModal').style.display = 'flex';
-        });
-
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            signOut(auth);
-        });
-
-        // Login/Register
-        document.getElementById('emailLoginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('emailInput').value;
-            const password = document.getElementById('passwordInput').value;
-            try {
-                await signInWithEmailAndPassword(auth, email, password);
-            } catch (error) {
-                alert('Erreur de connexion: ' + error.message);
-            }
-        });
-
-        document.getElementById('registerBtn').addEventListener('click', async () => {
-            const email = document.getElementById('emailInput').value;
-            const password = document.getElementById('passwordInput').value;
-            if (!email || !password) {
-                alert('Veuillez remplir tous les champs');
-                return;
-            }
-            try {
-                await createUserWithEmailAndPassword(auth, email, password);
-            } catch (error) {
-                alert('Erreur d\'inscription: ' + error.message);
-            }
-        });
-
-        document.getElementById('googleLoginBtn').addEventListener('click', async () => {
-            const provider = new GoogleAuthProvider();
-            try {
-                await signInWithPopup(auth, provider);
-            } catch (error) {
-                alert('Erreur de connexion Google: ' + error.message);
-            }
-        });
-
-        // Settings
-        document.getElementById('updateNameBtn').addEventListener('click', async () => {
-            const newName = document.getElementById('newDisplayName').value;
-            if (!newName) return alert('Veuillez entrer un pseudo');
-            try {
-                await updateProfile(currentUser, { displayName: newName });
-                alert('Pseudo mis à jour avec succès!');
-                location.reload();
-            } catch (error) {
-                alert('Erreur: ' + error.message);
-            }
-        });
-
-        document.getElementById('updateEmailBtn').addEventListener('click', async () => {
-            const newEmailValue = document.getElementById('newEmail').value;
-            if (!newEmailValue) return alert('Veuillez entrer un email');
-            try {
-                await updateEmail(currentUser, newEmailValue);
-                alert('Email mis à jour avec succès!');
-                location.reload();
-            } catch (error) {
-                alert('Erreur: ' + error.message + '. Vous devrez peut-être vous reconnecter.');
-            }
-        });
-
-        document.getElementById('updatePasswordBtn').addEventListener('click', async () => {
-            const newPass = document.getElementById('newPassword').value;
-            const confirmPass = document.getElementById('confirmPassword').value;
-            if (!newPass || !confirmPass) return alert('Veuillez remplir tous les champs');
-            if (newPass !== confirmPass) return alert('Les mots de passe ne correspondent pas');
-            try {
-                await updatePassword(currentUser, newPass);
-                alert('Mot de passe mis à jour avec succès!');
-            } catch (error) {
-                alert('Erreur: ' + error.message + '. Vous devrez peut-être vous reconnecter.');
-            }
-        });
-
-        document.getElementById('deleteAccountBtn').addEventListener('click', async () => {
-            if (!confirm('⚠️ ATTENTION! Êtes-vous sûr de vouloir supprimer votre compte? Cette action est irréversible!')) return;
-            if (!confirm('Dernière confirmation: Supprimer définitivement le compte?')) return;
-            try {
-                await deleteUser(currentUser);
-                alert('Compte supprimé avec succès');
-            } catch (error) {
-                alert('Erreur: ' + error.message + '. Vous devrez peut-être vous reconnecter pour effectuer cette action.');
-            }
-        });
-
-        // Add game
-        document.getElementById('addGameForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
-                return alert('Accès refusé');
-            }
-
-            const title = document.getElementById('gameTitle').value;
-            const description = document.getElementById('gameDescription').value;
-            const imageFile = document.getElementById('gameImageFile').files[0];
-            const zipFile = document.getElementById('gameZipFile').files[0];
-
-            if (!imageFile || !zipFile) {
-                return alert('Veuillez sélectionner une image et un fichier .zip');
-            }
-
-            document.getElementById('submitGameBtn').textContent = 'Upload en cours...';
-            document.getElementById('submitGameBtn').disabled = true;
-
-            try {
-                // Upload image
-                const imageRef = ref(storage, `games/${Date.now()}_${imageFile.name}`);
-                await uploadBytes(imageRef, imageFile);
-                const imageUrl = await getDownloadURL(imageRef);
-
-                // Upload zip
-                const zipRef = ref(storage, `games/${Date.now()}_${zipFile.name}`);
-                await uploadBytes(zipRef, zipFile);
-                const zipUrl = await getDownloadURL(zipRef);
-
-                // Save to Firestore
-                await addDoc(collection(db, 'games'), {
-                    title,
-                    description,
-                    image: imageUrl,
-                    downloadUrl: zipUrl,
-                    reviews: [],
-                    createdAt: new Date()
-                });
-
-                alert('Jeu publié avec succès!');
-                document.getElementById('addGameForm').reset();
-                document.getElementById('imageFileName').textContent = '';
-                document.getElementById('zipFileName').textContent = '';
-                closeModal('adminModal');
-                loadGames();
-            } catch (error) {
-                alert('Erreur: ' + error.message);
-            } finally {
-                document.getElementById('submitGameBtn').textContent = 'Publier le jeu';
-                document.getElementById('submitGameBtn').disabled = false;
-            }
-        });
-
-        // Edit game
-        document.getElementById('editGameForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
-                return alert('Accès refusé');
-            }
-
-            const title = document.getElementById('editGameTitle').value;
-            const description = document.getElementById('editGameDescription').value;
-            const imageFile = document.getElementById('editGameImageFile').files[0];
-            const zipFile = document.getElementById('editGameZipFile').files[0];
-
-            try {
-                const gameRef = doc(db, 'games', editingGameId);
-                const updateData = { title, description };
-
-                if (imageFile) {
-                    const imageRef = ref(storage, `games/${Date.now()}_${imageFile.name}`);
-                    await uploadBytes(imageRef, imageFile);
-                    updateData.image = await getDownloadURL(imageRef);
-                }
-
-                if (zipFile) {
-                    const zipRef = ref(storage, `games/${Date.now()}_${zipFile.name}`);
-                    await uploadBytes(zipRef, zipFile);
-                    updateData.downloadUrl = await getDownloadURL(zipRef);
-                }
-
-                await updateDoc(gameRef, updateData);
-                alert('Jeu modifié avec succès!');
-                closeModal('editGameModal');
-                loadGames();
-            } catch (error) {
-                alert('Erreur: ' + error.message);
-            }
-        });
-
-        // Delete game
-        async function deleteGame(gameId) {
-            if (!confirm('Êtes-vous sûr de vouloir supprimer ce jeu?')) return;
-            try {
-                await deleteDoc(doc(db, 'games', gameId));
-                alert('Jeu supprimé avec succès!');
-                loadGames();
-            } catch (error) {
-                alert('Erreur: ' + error.message);
-            }
-        }
-
-        // Edit game modal
-        function openEditGameModal(gameId, game) {
-            editingGameId = gameId;
-            document.getElementById('editGameTitle').value = game.title;
-            document.getElementById('editGameDescription').value = game.description;
-            document.getElementById('editGameModal').style.display = 'flex';
-        }
-
-        // Load games
-        async function loadGames() {
-            const gamesGrid = document.getElementById('gamesGrid');
-            gamesGrid.innerHTML = '';
-
-            try {
-                const q = query(collection(db, 'games'), orderBy('createdAt', 'desc'));
-                const querySnapshot = await getDocs(q);
-                
-                allGames = [];
-                querySnapshot.forEach((doc) => {
-                    allGames.push({ id: doc.id, ...doc.data() });
-                });
-
-                displayGames(allGames);
-            } catch (error) {
-                console.error('Erreur de chargement:', error);
-                gamesGrid.innerHTML = '<div class="no-games">Erreur de chargement des jeux</div>';
-            }
-        }
-
-        function displayGames(games) {
-            const gamesGrid = document.getElementById('gamesGrid');
-            gamesGrid.innerHTML = '';
-
-            if (games.length === 0) {
-                gamesGrid.innerHTML = '<div class="no-games">Aucun jeu trouvé</div>';
-                return;
-            }
-
-            games.forEach((game) => {
-                const avgRating = calculateAverageRating(game.reviews || []);
-                
-                const gameCard = document.createElement('div');
-                gameCard.className = 'game-card';
-                gameCard.innerHTML = `
-                    ${currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase() ? `
-                        <div class="admin-actions">
-                            <button class="admin-btn" onclick="editGame('${game.id}')">✏️</button>
-                            <button class="admin-btn" onclick="deleteGameBtn('${game.id}')">🗑️</button>
-                        </div>
-                    ` : ''}
-                    <img src="${game.image}" class="game-image" alt="${game.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22200%22%3E%3Crect fill=%22%2300d4ff%22 width=%22280%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2220%22 fill=%22white%22 text-anchor=%22middle%22 dy=%22.3em%22%3E${game.title}%3C/text%3E%3C/svg%3E'">
-                    <div class="game-info">
-                        <div class="game-title">${game.title}</div>
-                        <div class="game-rating">${displayStars(avgRating)} (${game.reviews?.length || 0} avis)</div>
-                    </div>
-                `;
-                gameCard.addEventListener('click', (e) => {
-                    if (!e.target.closest('.admin-actions')) {
-                        openGameModal(game.id, game);
-                    }
-                });
-                gamesGrid.appendChild(gameCard);
-            });
-        }
-
-        window.editGame = (gameId) => {
-            const game = allGames.find(g => g.id === gameId);
-            if (game) openEditGameModal(gameId, game);
-        };
-
-        window.deleteGameBtn = deleteGame;
-
-        // Search
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-            const filtered = allGames.filter(game => 
-                game.title.toLowerCase().includes(searchTerm) ||
-                game.description.toLowerCase().includes(searchTerm)
-            );
-            displayGames(filtered);
-        });
-
-        function calculateAverageRating(reviews) {
-            if (!reviews || reviews.length === 0) return 0;
-            const sum = reviews.reduce((acc, r) => acc + r.rating, 0);
-            return (sum / reviews.length).toFixed(1);
-        }
-
-        function displayStars(rating) {
-            const fullStars = Math.floor(rating);
-            let stars = '★'.repeat(fullStars) + '☆'.repeat(5 - fullStars);
-            return stars + ` ${rating}`;
-        }
-
-        // Game modal
-        function openGameModal(gameId, game) {
-            currentGameId = gameId;
-            document.getElementById('gameModal').style.display = 'flex';
-            document.getElementById('modalGameImage').src = game.image;
-            document.getElementById('modalGameTitle').textContent = game.title;
-            document.getElementById('modalGameDescription').textContent = game.description;
-            document.getElementById('modalGameRating').textContent = displayStars(calculateAverageRating(game.reviews || []));
-            
-            document.getElementById('downloadBtn').onclick = () => {
-                const link = document.createElement('a');
-                link.href = game.downloadUrl;
-                link.download = game.title + '.zip';
-                link.click();
-            };
-
-            displayReviews(game.reviews || []);
-        }
-
-        window.closeModal = (modalId) => {
-            document.getElementById(modalId).style.display = 'none';
-            if (modalId === 'gameModal') {
-                currentGameId = null;
-                selectedRating = 0;
-                document.getElementById('reviewText').value = '';
-                updateStarDisplay();
-            }
-        };
-
-        // Rating stars
-        document.querySelectorAll('#ratingStars span').forEach(star => {
-            star.addEventListener('click', (e) => {
-                selectedRating = parseInt(e.target.dataset.rating);
-                updateStarDisplay();
-            });
-        });
-
-        function updateStarDisplay() {
-            document.querySelectorAll('#ratingStars span').forEach((star, index) => {
-                star.textContent = index < selectedRating ? '★' : '☆';
-            });
-        }
-
-        // Submit review
-        document.getElementById('submitReviewBtn').addEventListener('click', async () => {
-            if (!currentUser) {
-                return alert('Vous devez être connecté pour laisser un avis');
-            }
-            if (selectedRating === 0) {
-                return alert('Veuillez sélectionner une note');
-            }
-            const reviewText = document.getElementById('reviewText').value.trim();
-            if (!reviewText) {
-                return alert('Veuillez écrire un avis');
-            }
-
-            const review = {
-                userId: currentUser.uid,
-                userName: currentUser.displayName || currentUser.email.split('@')[0],
-                rating: selectedRating,
-                text: reviewText,
-                date: new Date().toLocaleDateString()
-            };
-
-            try {
-                const gameRef = doc(db, 'games', currentGameId);
-                await updateDoc(gameRef, {
-                    reviews: arrayUnion(review)
-                });
-                alert('Avis publié avec succès!');
-                selectedRating = 0;
-                document.getElementById('reviewText').value = '';
-                updateStarDisplay();
-                loadGames();
-                
-                const gameDoc = await getDocs(query(collection(db, 'games')));
-                gameDoc.forEach(d => {
-                    if (d.id === currentGameId) {
-                        displayReviews(d.data().reviews || []);
-                    }
-                });
-            } catch (error) {
-                alert('Erreur: ' + error.message);
-            }
-        });
-
-        // Delete review
-        async function deleteReview(review) {
-            if (!confirm('Supprimer cet avis?')) return;
-            try {
-                const gameRef = doc(db, 'games', currentGameId);
-                await updateDoc(gameRef, {
-                    reviews: arrayRemove(review)
-                });
-                alert('Avis supprimé');
-                loadGames();
-                const gameDoc = await getDocs(query(collection(db, 'games')));
-                gameDoc.forEach(d => {
-                    if (d.id === currentGameId) {
-                        displayReviews(d.data().reviews || []);
-                    }
-                });
-            } catch (error) {
-                alert('Erreur: ' + error.message);
-            }
-        }
-
-        function displayReviews(reviews) {
-            const reviewsList = document.getElementById('reviewsList');
-            reviewsList.innerHTML = '<h3>Avis des joueurs</h3>';
-            
-            if (reviews.length === 0) {
-                reviewsList.innerHTML += '<p>Aucun avis pour le moment</p>';
-                return;
-            }
-
-            reviews.forEach(review => {
-                const reviewItem = document.createElement('div');
-                reviewItem.className = 'review-item';
-                reviewItem.innerHTML = `
-                    ${currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase() ? `
-                        <button class="delete-review-btn" onclick="deleteReviewBtn(${JSON.stringify(review).replace(/"/g, '&quot;')})">Supprimer</button>
-                    ` : ''}
-                    <strong>${review.userName}</strong> - ${displayStars(review.rating)}
-                    <p>${review.text}</p>
-                    <small>${review.date}</small>
-                `;
-                reviewsList.appendChild(reviewItem);
-            });
-        }
-
-        window.deleteReviewBtn = deleteReview;
-    </script>
-</body>
-</html>
