@@ -886,18 +886,62 @@
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         import { getFirestore, collection, addDoc, getDocs, query, orderBy, doc, updateDoc, arrayUnion, deleteDoc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-        // Configuration Firebase (clés encodées pour sécurité)
-        const firebaseConfig = {
-            apiKey: atob('QUl6YVN5Q1FrYTdxTFFFWF9LTjRqeGlMUUdGdmc3TUhQQjBxenEw'),
-            authDomain: atob('a3Jhc2xleS00ZTFkYy5maXJlYmFzZWFwcC5jb20='),
-            projectId: atob('a3Jhc2xleS00ZTFkYw=='),
-            storageBucket: atob('a3Jhc2xleS00ZTFkYy5maXJlYmFzZXN0b3JhZ2UuYXBw'),
-            messagingSenderId: atob('MzIyNDgxNDkwMDA5'),
-            appId: atob('MTozMjI0ODE0OTAwMDk6d2ViOjJiZWZhN2U1MTcyZjNkYTNiOTQ5NDg='),
-            measurementId: atob('Ry1QUUJIV1I2R1ZU')
-        };
+function _0x3a0f(_0x10f1ea, _0x2502dc) {
+    const _0x48c9b4 = _0x48c9();
+    return _0x3a0f = function (_0x3a0f38, _0x50fc62) {
+        _0x3a0f38 = _0x3a0f38 - 0x79;
+        let _0xbf21f0 = _0x48c9b4[_0x3a0f38];
+        return _0xbf21f0;
+    }, _0x3a0f(_0x10f1ea, _0x2502dc);
+}
+const _0x1c594c = _0x3a0f;
+(function (_0x4ed987, _0x56848e) {
+    const _0x2a0dd1 = _0x3a0f, _0x5895d0 = _0x4ed987();
+    while (!![]) {
+        try {
+            const _0x38eb7c = -parseInt(_0x2a0dd1(0x7e)) / 0x1 * (-parseInt(_0x2a0dd1(0x7b)) / 0x2) +
+                parseInt(_0x2a0dd1(0x84)) / 0x3 * (-parseInt(_0x2a0dd1(0x83)) / 0x4) +
+                -parseInt(_0x2a0dd1(0x7a)) / 0x5 * (parseInt(_0x2a0dd1(0x7c)) / 0x6) +
+                parseInt(_0x2a0dd1(0x82)) / 0x7 +
+                parseInt(_0x2a0dd1(0x80)) / 0x8 * (parseInt(_0x2a0dd1(0x81)) / 0x9) +
+                -parseInt(_0x2a0dd1(0x7d)) / 0xa +
+                parseInt(_0x2a0dd1(0x85)) / 0xb;
+            if (_0x38eb7c === _0x56848e) break;
+            else _0x5895d0['push'](_0x5895d0['shift']());
+        } catch (_0x536a05) {
+            _0x5895d0['push'](_0x5895d0['shift']());
+        }
+    }
+}(_0x48c9, 0x25a15));
+
+function _0x48c9() {
+    const _0x31e4ed = [
+        '1444632nPRnUs', '956rfdnAs', '3411VkFikm', '2627240UvbqaI',
+        'krasley-4e1dc.firebasestorage.app', 'G-PQBHWR6GVT',
+        'AIzaSyCQka7qLQEX_KN4jxiLQGFvg7MHPB0qzq0', '17570tJOpHK',
+        '49186ExUayS', '258TbiUDz', '2284940nDRCTo', '6pQxnvn',
+        '322481490009', '850792VEzFiG', '18ZuwiUB'
+    ];
+    _0x48c9 = function () { return _0x31e4ed; };
+    return _0x48c9();
+}
+
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js';
+
+const firebaseConfig = {
+    apiKey: _0x1c594c(0x79),
+    authDomain: 'krasley-4e1dc.firebaseapp.com',
+    projectId: 'krasley-4e1dc',
+    storageBucket: _0x1c594c(0x86),
+    messagingSenderId: _0x1c594c(0x7f),
+    appId: '1:322481490009:web:2befa7e5172f3da3b94948',
+    measurementId: _0x1c594c(0x87)
+};
+
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
         
-        const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
         const ADMIN_EMAIL = atob('a3Jhc2xleXN0dWRpb0BnbWFpbC5jb20=');
