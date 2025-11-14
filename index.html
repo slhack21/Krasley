@@ -625,6 +625,27 @@
             font-size: 1.1rem;
         }
 
+        .welcome-message {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            text-align: center;
+        }
+
+        .welcome-message h1 {
+            color: #00d4ff;
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
+        }
+
+        .welcome-message p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
         @media (max-width: 768px) {
             .games-grid {
                 grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -637,6 +658,14 @@
 
             .logo {
                 font-size: 1.5rem;
+            }
+
+            .welcome-message h1 {
+                font-size: 1.8rem;
+            }
+
+            .welcome-message p {
+                font-size: 1rem;
             }
         }
     </style>
@@ -688,11 +717,26 @@
     </div>
 
     <div class="container">
+        <div id="welcomeMessage" class="welcome-message">
+            <h1>🎮 Bienvenue sur Krasley Games</h1>
+            <p>Découvrez notre collection de jeux incroyables !</p>
+        </div>
+
         <div id="userInfo" class="user-info hidden">
             <div>
                 <strong>Bienvenue, <span id="userName"></span></strong>
                 <p id="userEmail"></p>
             </div>
+        </div>
+
+        <!-- Barre de recherche -->
+        <div class="search-container">
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher un jeu...">
+                <button class="clear-search" id="clearSearch">×</button>
+                <span class="search-icon">🔍</span>
+            </div>
+            <div class="search-results-info" id="searchResultsInfo"></div>
         </div>
 
         <div id="adminPanel" class="admin-panel hidden">
@@ -840,6 +884,7 @@
         let selectedRating = 0;
         let allCategories = [];
         let allGames = [];
+        let searchQuery = '';
 
         window.toggleAccordion = function(header) {
             const accordion = header.parentElement;
@@ -852,6 +897,125 @@
                 categorySection.classList.toggle('active');
             }
         };
+
+        // Gestion de la barre de recherche
+        const searchInput = document.getElementById('searchInput');
+        const clearSearchBtn = document.getElementById('clearSearch');
+        const searchResultsInfo = document.getElementById('searchResultsInfo');
+
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value.toLowerCase().trim();
+            
+            if (searchQuery) {
+                clearSearchBtn.classList.add('visible');
+            } else {
+                clearSearchBtn.classList.remove('visible');
+            }
+            
+            filterGames();
+        });
+
+        clearSearchBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            searchQuery = '';
+            clearSearchBtn.classList.remove('visible');
+            searchResultsInfo.textContent = '';
+            filterGames();
+        });
+
+        function filterGames() {
+            if (!searchQuery) {
+                displayGamesByCategory();
+                searchResultsInfo.textContent = '';
+                return;
+            }
+
+            const filteredGames = allGames.filter(game => 
+                game.title.toLowerCase().includes(searchQuery) ||
+                game.description.toLowerCase().includes(searchQuery)
+            );
+
+            searchResultsInfo.textContent = `${filteredGames.length} jeu(x) trouvé(s)`;
+
+            const container = document.getElementById('categoriesContainer');
+            container.innerHTML = '';
+
+            if (filteredGames.length === 0) {
+                container.innerHTML = '<div class="empty-category">Aucun jeu ne correspond à votre recherche</div>';
+                return;
+            }
+
+            // Grouper par catégorie
+            const gamesByCategory = {};
+            filteredGames.forEach(game => {
+                if (!gamesByCategory[game.category]) {
+                    gamesByCategory[game.category] = [];
+                }
+                gamesByCategory[game.category].push(game);
+            });
+
+            // Afficher les résultats
+            Object.keys(gamesByCategory).forEach(categoryId => {
+                const category = allCategories.find(c => c.id === categoryId);
+                if (!category) return;
+
+                const categorySection = document.createElement('div');
+                categorySection.className = 'category-section active';
+                categorySection.setAttribute('data-category-id', categoryId);
+                
+                const isAdmin = currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+                
+                categorySection.innerHTML = `
+                    <div class="category-header" onclick="toggleCategory('${categoryId}')">
+                        <h2>${category.name}</h2>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            ${isAdmin ? `<button class="btn-small btn-delete" onclick="event.stopPropagation(); deleteCategory('${categoryId}', '${category.name}')">🗑️ Supprimer</button>` : ''}
+                            <span class="category-arrow">▼</span>
+                        </div>
+                    </div>
+                    <div class="category-games">
+                        <div class="games-grid" id="games-${categoryId}"></div>
+                    </div>
+                `;
+                
+                container.appendChild(categorySection);
+                
+                const gamesGrid = document.getElementById(`games-${categoryId}`);
+                displayGamesInGrid(gamesGrid, gamesByCategory[categoryId], isAdmin);
+            });
+        }
+
+        function displayGamesInGrid(gamesGrid, games, isAdmin) {
+            gamesGrid.innerHTML = '';
+            
+            games.forEach(game => {
+                const avgRating = calculateAverageRating(game.reviews || []);
+                
+                const gameCard = document.createElement('div');
+                gameCard.className = 'game-card';
+                gameCard.innerHTML = `
+                    <img src="${game.image}" class="game-image" alt="${game.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22200%22%3E%3Crect fill=%22%2300d4ff%22 width=%22280%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2220%22 fill=%22white%22 text-anchor=%22middle%22 dy=%22.3em%22%3E${game.title}%3C/text%3E%3C/svg%3E'">
+                    <div class="game-info">
+                        <div class="game-title">${game.title}</div>
+                        <div class="game-rating">${displayStars(avgRating)} (${game.reviews?.length || 0} avis)</div>
+                        ${isAdmin ? `
+                            <div class="game-actions">
+                                <button class="btn-small btn-edit" onclick="event.stopPropagation(); editGame('${game.id}')">✏️ Modifier</button>
+                                <button class="btn-small btn-delete" onclick="event.stopPropagation(); deleteGame('${game.id}', '${game.title}')">🗑️ Supprimer</button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+                
+                gameCard.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('btn-small')) {
+                        openGameModal(game.id, game);
+                    }
+                });
+                
+                gamesGrid.appendChild(gameCard);
+            });
+        }
 
         async function loadCategories() {
             try {
@@ -896,7 +1060,11 @@
                     });
                 });
 
-                displayGamesByCategory();
+                if (searchQuery) {
+                    filterGames();
+                } else {
+                    displayGamesByCategory();
+                }
             } catch (error) {
                 console.error('Erreur chargement jeux:', error);
             }
@@ -940,33 +1108,7 @@
                 if (categoryGames.length === 0) {
                     gamesGrid.innerHTML = '<div class="empty-category">Aucun jeu dans cette catégorie</div>';
                 } else {
-                    categoryGames.forEach(game => {
-                        const avgRating = calculateAverageRating(game.reviews || []);
-                        
-                        const gameCard = document.createElement('div');
-                        gameCard.className = 'game-card';
-                        gameCard.innerHTML = `
-                            <img src="${game.image}" class="game-image" alt="${game.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22200%22%3E%3Crect fill=%22%2300d4ff%22 width=%22280%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2220%22 fill=%22white%22 text-anchor=%22middle%22 dy=%22.3em%22%3E${game.title}%3C/text%3E%3C/svg%3E'">
-                            <div class="game-info">
-                                <div class="game-title">${game.title}</div>
-                                <div class="game-rating">${displayStars(avgRating)} (${game.reviews?.length || 0} avis)</div>
-                                ${isAdmin ? `
-                                    <div class="game-actions">
-                                        <button class="btn-small btn-edit" onclick="event.stopPropagation(); editGame('${game.id}')">✏️ Modifier</button>
-                                        <button class="btn-small btn-delete" onclick="event.stopPropagation(); deleteGame('${game.id}', '${game.title}')">🗑️ Supprimer</button>
-                                    </div>
-                                ` : ''}
-                            </div>
-                        `;
-                        
-                        gameCard.addEventListener('click', (e) => {
-                            if (!e.target.classList.contains('btn-small')) {
-                                openGameModal(game.id, game);
-                            }
-                        });
-                        
-                        gamesGrid.appendChild(gameCard);
-                    });
+                    displayGamesInGrid(gamesGrid, categoryGames, isAdmin);
                 }
             });
         }
@@ -1038,6 +1180,7 @@
                 document.getElementById('loginBtn').classList.add('hidden');
                 document.getElementById('hamburger').classList.remove('hidden');
                 document.getElementById('userInfo').classList.remove('hidden');
+                document.getElementById('welcomeMessage').classList.add('hidden');
                 document.getElementById('userName').textContent = user.displayName || user.email.split('@')[0];
                 document.getElementById('userEmail').textContent = user.email;
                 
@@ -1064,6 +1207,7 @@
                 document.getElementById('loginBtn').classList.remove('hidden');
                 document.getElementById('hamburger').classList.add('hidden');
                 document.getElementById('userInfo').classList.add('hidden');
+                document.getElementById('welcomeMessage').classList.remove('hidden');
                 document.getElementById('adminPanel').classList.add('hidden');
                 closeSidebar();
             }
