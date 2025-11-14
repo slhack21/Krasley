@@ -382,7 +382,6 @@
             border: 1px solid rgba(0, 212, 255, 0.2);
         }
 
-        /* Search Bar */
         .search-container {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
@@ -561,7 +560,6 @@
             opacity: 0.7;
         }
 
-        /* Category Section */
         .category-section {
             margin-bottom: 2rem;
         }
@@ -950,6 +948,11 @@
             .search-wrapper {
                 width: 100%;
             }
+
+            .notif-panel {
+                width: 90%;
+                right: 5%;
+            }
         }
     </style>
 </head>
@@ -958,11 +961,26 @@
         <div class="logo">🎮 KRASLEY GAMES</div>
         <div class="nav-buttons">
             <button id="loginBtn">Connexion</button>
+            <button class="notif-btn hidden" id="notifBtn">
+                🔔
+                <span class="notif-badge hidden" id="notifBadge">0</span>
+            </button>
             <div class="hamburger hidden" id="hamburger">
                 <span></span>
                 <span></span>
                 <span></span>
             </div>
+        </div>
+    </div>
+
+    <!-- Panneau de notifications -->
+    <div class="notif-panel" id="notifPanel">
+        <div class="notif-header">
+            <h3>🔔 Notifications</h3>
+            <button class="mark-read-btn" id="markAllReadBtn">Tout marquer comme lu</button>
+        </div>
+        <div class="notif-list" id="notifList">
+            <div class="no-notifs">Aucune notification</div>
         </div>
     </div>
 
@@ -1203,7 +1221,7 @@
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy, doc, updateDoc, arrayUnion, deleteDoc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy, doc, updateDoc, arrayUnion, deleteDoc, getDoc, setDoc, onSnapshot, where } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         const firebaseConfig = {
             apiKey: atob('QUl6YVN5Q1FrYTdxTFFFWF9LTjRqeGlMUUdGdmc3TUhQQjBxenEw'),
@@ -1228,6 +1246,163 @@
         let searchQuery = '';
         let allRequests = [];
         let currentRequestId = null;
+        let userNotifications = [];
+        let notificationsListener = null;
+
+        // Gestion des notifications
+        function initNotifications() {
+            if (!currentUser) return;
+
+            // Écouter les notifications en temps réel
+            const notifQuery = query(
+                collection(db, 'notifications'),
+                where('userId', '==', currentUser.uid),
+                orderBy('createdAt', 'desc')
+            );
+
+            notificationsListener = onSnapshot(notifQuery, (snapshot) => {
+                userNotifications = [];
+                snapshot.forEach((doc) => {
+                    userNotifications.push({
+                        id: doc.id,
+                        ...doc.data()
+                    });
+                });
+                displayNotifications();
+                updateNotificationBadge();
+            });
+        }
+
+        function displayNotifications() {
+            const notifList = document.getElementById('notifList');
+            notifList.innerHTML = '';
+
+            if (userNotifications.length === 0) {
+                notifList.innerHTML = '<div class="no-notifs">Aucune notification</div>';
+                return;
+            }
+
+            userNotifications.forEach(notif => {
+                const notifItem = document.createElement('div');
+                notifItem.className = `notif-item ${notif.read ? '' : 'unread'} ${notif.type || ''}`;
+                
+                const icons = {
+                    'announcement': '📢',
+                    'response': '💬',
+                    'security': '🔒',
+                    'game': '🎮'
+                };
+                
+                const icon = icons[notif.type] || '🔔';
+                
+                notifItem.innerHTML = `
+                    <div class="notif-title">
+                        <span class="notif-icon">${icon}</span>
+                        ${notif.title}
+                    </div>
+                    <div class="notif-message">${notif.message}</div>
+                    <div class="notif-time">${formatNotificationTime(notif.createdAt)}</div>
+                `;
+                
+                notifItem.addEventListener('click', async () => {
+                    if (!notif.read) {
+                        await markNotificationAsRead(notif.id);
+                    }
+                    if (notif.link) {
+                        // Gérer les liens de notification
+                        handleNotificationClick(notif);
+                    }
+                });
+                
+                notifList.appendChild(notifItem);
+            });
+        }
+
+        function formatNotificationTime(timestamp) {
+            if (!timestamp) return 'À l\'instant';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            const now = new Date();
+            const diff = Math.floor((now - date) / 1000);
+
+            if (diff < 60) return 'À l\'instant';
+            if (diff < 3600) return `Il y a ${Math.floor(diff / 60)} min`;
+            if (diff < 86400) return `Il y a ${Math.floor(diff / 3600)} h`;
+            return date.toLocaleDateString();
+        }
+
+        async function markNotificationAsRead(notifId) {
+            try {
+                await updateDoc(doc(db, 'notifications', notifId), {
+                    read: true
+                });
+            } catch (error) {
+                console.error('Erreur marquage notification:', error);
+            }
+        }
+
+        function handleNotificationClick(notif) {
+            document.getElementById('notifPanel').classList.remove('active');
+            
+            if (notif.type === 'response' && notif.suggestionId) {
+                // Ouvrir la suggestion avec la réponse
+                const suggestion = allRequests.find(r => r.id === notif.suggestionId);
+                if (suggestion) {
+                    openRequestDetail(suggestion.id, suggestion);
+                }
+            }
+        }
+
+        function updateNotificationBadge() {
+            const badge = document.getElementById('notifBadge');
+            const unreadCount = userNotifications.filter(n => !n.read).length;
+            
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        async function createNotification(userId, title, message, type = 'announcement', link = null, suggestionId = null) {
+            try {
+                await addDoc(collection(db, 'notifications'), {
+                    userId: userId,
+                    title: title,
+                    message: message,
+                    type: type,
+                    link: link,
+                    suggestionId: suggestionId,
+                    read: false,
+                    createdAt: new Date()
+                });
+            } catch (error) {
+                console.error('Erreur création notification:', error);
+            }
+        }
+
+        // Bouton notifications
+        document.getElementById('notifBtn').addEventListener('click', () => {
+            const panel = document.getElementById('notifPanel');
+            panel.classList.toggle('active');
+        });
+
+        // Fermer le panneau en cliquant ailleurs
+        document.addEventListener('click', (e) => {
+            const panel = document.getElementById('notifPanel');
+            const btn = document.getElementById('notifBtn');
+            if (!panel.contains(e.target) && !btn.contains(e.target)) {
+                panel.classList.remove('active');
+            }
+        });
+
+        // Marquer toutes comme lues
+        document.getElementById('markAllReadBtn').addEventListener('click', async () => {
+            const unreadNotifs = userNotifications.filter(n => !n.read);
+            for (const notif of unreadNotifs) {
+                await markNotificationAsRead(notif.id);
+            }
+        });
 
         window.toggleAccordion = function(header) {
             const accordion = header.parentElement;
@@ -1241,7 +1416,6 @@
             }
         };
 
-        // Gestion de la barre de recherche
         const searchInput = document.getElementById('searchInput');
         const clearSearchBtn = document.getElementById('clearSearch');
         const searchResultsInfo = document.getElementById('searchResultsInfo');
@@ -1288,7 +1462,6 @@
                 return;
             }
 
-            // Grouper par catégorie
             const gamesByCategory = {};
             filteredGames.forEach(game => {
                 if (!gamesByCategory[game.category]) {
@@ -1297,7 +1470,6 @@
                 gamesByCategory[game.category].push(game);
             });
 
-            // Afficher les résultats
             Object.keys(gamesByCategory).forEach(categoryId => {
                 const category = allCategories.find(c => c.id === categoryId);
                 if (!category) return;
@@ -1521,6 +1693,7 @@
             currentUser = user;
             if (user) {
                 document.getElementById('loginBtn').classList.add('hidden');
+                document.getElementById('notifBtn').classList.remove('hidden');
                 document.getElementById('hamburger').classList.remove('hidden');
                 document.getElementById('userInfo').classList.remove('hidden');
                 document.getElementById('welcomeMessage').classList.add('hidden');
@@ -1547,13 +1720,21 @@
                     permissionBadge.innerHTML = '<span class="permission-badge badge-member">👤 MEMBRE</span>';
                 }
                 
+                initNotifications();
                 closeAuthModal();
             } else {
                 document.getElementById('loginBtn').classList.remove('hidden');
+                document.getElementById('notifBtn').classList.add('hidden');
                 document.getElementById('hamburger').classList.add('hidden');
                 document.getElementById('userInfo').classList.add('hidden');
                 document.getElementById('welcomeMessage').classList.remove('hidden');
                 document.getElementById('adminPanel').classList.add('hidden');
+                
+                if (notificationsListener) {
+                    notificationsListener();
+                    notificationsListener = null;
+                }
+                
                 closeSidebar();
             }
             
@@ -1585,7 +1766,13 @@
                 return;
             }
             try {
-                await createUserWithEmailAndPassword(auth, email, password);
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                await createNotification(
+                    userCredential.user.uid,
+                    '🎉 Bienvenue sur Krasley Games!',
+                    'Merci de vous être inscrit! Explorez notre collection de jeux et n\'hésitez pas à suggérer de nouveaux titres.',
+                    'announcement'
+                );
             } catch (error) {
                 alert('Erreur d\'inscription: ' + error.message);
             }
@@ -1594,7 +1781,16 @@
         document.getElementById('googleLoginBtn').addEventListener('click', async () => {
             const provider = new GoogleAuthProvider();
             try {
-                await signInWithPopup(auth, provider);
+                const result = await signInWithPopup(auth, provider);
+                const userDoc = await getDoc(doc(db, 'users', result.user.uid));
+                if (!userDoc.exists()) {
+                    await createNotification(
+                        result.user.uid,
+                        '🎉 Bienvenue sur Krasley Games!',
+                        'Merci de vous être inscrit! Explorez notre collection de jeux et n\'hésitez pas à suggérer de nouveaux titres.',
+                        'announcement'
+                    );
+                }
             } catch (error) {
                 alert('Erreur de connexion Google: ' + error.message);
             }
@@ -1737,6 +1933,16 @@
                 alert('✅ Jeu publié avec succès!');
                 document.getElementById('addGameForm').reset();
                 await loadGames();
+                
+                const usersSnapshot = await getDocs(collection(db, 'users'));
+                usersSnapshot.forEach(async (userDoc) => {
+                    await createNotification(
+                        userDoc.id,
+                        '🎮 Nouveau jeu disponible!',
+                        `Le jeu "${gameData.title}" vient d'être ajouté à la plateforme. Venez le découvrir!`,
+                        'game'
+                    );
+                });
             } catch (error) {
                 alert('Erreur: ' + error.message);
             }
@@ -1867,9 +2073,7 @@
             currentRequestId = null;
         };
 
-        // Bouton de suggestion
         document.getElementById('suggestionBtn').addEventListener('click', function() {
-            console.log('Bouton suggestion cliqué');
             if (!currentUser) {
                 alert('Vous devez être connecté pour suggérer un jeu');
                 document.getElementById('authModal').classList.add('active');
@@ -1878,7 +2082,6 @@
             document.getElementById('suggestionModal').classList.add('active');
         });
 
-        // Formulaire de suggestion
         document.getElementById('suggestionForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -1902,12 +2105,21 @@
                 await addDoc(collection(db, 'suggestions'), suggestionData);
                 alert('✅ Suggestion envoyée avec succès! Les admins la consulteront bientôt.');
                 closeSuggestionModal();
+                
+                const adminsSnapshot = await getDocs(query(collection(db, 'users'), where('isAdmin', '==', true)));
+                adminsSnapshot.forEach(async (adminDoc) => {
+                    await createNotification(
+                        adminDoc.id,
+                        '💡 Nouvelle suggestion de jeu',
+                        `${suggestionData.userName} a suggéré le jeu "${suggestionData.title}"`,
+                        'announcement'
+                    );
+                });
             } catch (error) {
                 alert('Erreur: ' + error.message);
             }
         });
 
-        // Charger les demandes
         async function loadRequests() {
             try {
                 const requestsSnapshot = await getDocs(query(collection(db, 'suggestions'), orderBy('createdAt', 'desc')));
@@ -1939,7 +2151,6 @@
             }
         }
 
-        // Afficher les demandes
         document.getElementById('requestsBtn')?.addEventListener('click', () => {
             displayRequests();
             document.getElementById('requestsModal').classList.add('active');
@@ -1986,7 +2197,6 @@
             document.getElementById('detailRequestDate').textContent = new Date(request.createdAt.toDate()).toLocaleString();
             document.getElementById('detailRequestMessage').textContent = request.message;
             
-            // Afficher la réponse si elle existe
             const adminResponseDisplay = document.getElementById('adminResponseDisplay');
             const adminResponseForm = document.getElementById('adminResponseForm');
             
@@ -2004,7 +2214,6 @@
             document.getElementById('requestDetailModal').classList.add('active');
         }
 
-        // Répondre à une demande
         document.getElementById('sendResponseBtn').addEventListener('click', async () => {
             if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
                 alert('Accès refusé');
@@ -2018,11 +2227,23 @@
             }
 
             try {
+                const requestDoc = await getDoc(doc(db, 'suggestions', currentRequestId));
+                const requestData = requestDoc.data();
+                
                 await updateDoc(doc(db, 'suggestions', currentRequestId), {
                     status: 'approved',
                     response: response,
                     respondedAt: new Date()
                 });
+                
+                await createNotification(
+                    requestData.userId,
+                    '💬 Réponse à votre suggestion',
+                    `L'administrateur a répondu à votre suggestion "${requestData.title}"`,
+                    'response',
+                    null,
+                    currentRequestId
+                );
                 
                 alert('✅ Réponse envoyée et suggestion validée!');
                 closeRequestDetailModal();
@@ -2032,7 +2253,6 @@
             }
         });
 
-        // Supprimer une demande
         document.getElementById('deleteRequestBtn').addEventListener('click', async () => {
             if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
                 alert('Accès refusé');
