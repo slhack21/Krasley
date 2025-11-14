@@ -211,55 +211,59 @@
             border: 1px solid rgba(0, 212, 255, 0.2);
         }
 
-        /* Categories Filter */
-        .categories-filter {
+        /* Category Section */
+        .category-section {
+            margin-bottom: 2rem;
+        }
+
+        .category-header {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             padding: 1.5rem;
-            border-radius: 20px;
-            margin-bottom: 2rem;
-            border: 1px solid rgba(0, 212, 255, 0.2);
-        }
-
-        .categories-filter h3 {
-            color: #00d4ff;
-            margin-bottom: 1rem;
-        }
-
-        .category-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.8rem;
-        }
-
-        .category-chip {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            color: white;
-            padding: 0.6rem 1.5rem;
-            border-radius: 25px;
+            border-radius: 15px;
             cursor: pointer;
             transition: all 0.3s;
-            font-weight: 600;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
         }
 
-        .category-chip:hover {
-            background: rgba(0, 212, 255, 0.2);
-            border-color: rgba(0, 212, 255, 0.5);
-            transform: translateY(-2px);
+        .category-header:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 212, 255, 0.4);
         }
 
-        .category-chip.active {
-            background: linear-gradient(45deg, #00d4ff, #ff00ea);
-            border-color: transparent;
-            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
+        .category-header h2 {
+            color: #00d4ff;
+            font-size: 1.5rem;
+        }
+
+        .category-arrow {
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .category-section.active .category-arrow {
+            transform: rotate(180deg);
+        }
+
+        .category-games {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+
+        .category-section.active .category-games {
+            max-height: 5000px;
+            margin-top: 1rem;
         }
 
         .games-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 2rem;
-            margin-top: 2rem;
         }
 
         .game-card {
@@ -295,16 +299,6 @@
             margin-bottom: 0.5rem;
         }
 
-        .game-category-tag {
-            display: inline-block;
-            background: rgba(0, 212, 255, 0.2);
-            color: #00d4ff;
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.85rem;
-            margin-bottom: 0.5rem;
-        }
-
         .game-rating {
             color: #ffd700;
             margin-bottom: 0.5rem;
@@ -318,9 +312,13 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
+            z-index: 2000;
             align-items: center;
             justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
         }
 
         .modal-content {
@@ -349,6 +347,7 @@
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.3s;
+            z-index: 10;
         }
 
         .close-modal:hover {
@@ -476,43 +475,6 @@
             padding: 1.5rem;
         }
 
-        .user-list-item {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 0.8rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .user-info-preview {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-        }
-
-        .user-badge {
-            display: inline-block;
-            padding: 0.2rem 0.6rem;
-            border-radius: 10px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-left: 0.5rem;
-        }
-
-        .category-list-item {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 0.8rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
         .btn-small {
             padding: 0.5rem 1rem;
             font-size: 0.9rem;
@@ -543,7 +505,7 @@
         }
 
         .hidden {
-            display: none;
+            display: none !important;
         }
 
         textarea {
@@ -573,6 +535,13 @@
             border-radius: 10px;
             margin-bottom: 1rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .empty-category {
+            text-align: center;
+            padding: 2rem;
+            opacity: 0.7;
+            font-size: 1.1rem;
         }
 
         @media (max-width: 768px) {
@@ -645,14 +614,6 @@
             </div>
         </div>
 
-        <!-- Categories Filter -->
-        <div class="categories-filter">
-            <h3>🎯 Catégories</h3>
-            <div class="category-chips" id="categoryChips">
-                <div class="category-chip active" data-category="all">Tous les jeux</div>
-            </div>
-        </div>
-
         <div id="adminPanel" class="admin-panel hidden">
             <h2>🛠️ Panel Administrateur</h2>
             
@@ -674,19 +635,9 @@
                     </form>
                 </div>
             </div>
-
-            <div class="accordion">
-                <div class="accordion-header" onclick="toggleAccordion(this)">
-                    <h3>📁 Gérer les catégories</h3>
-                    <span class="accordion-icon">▼</span>
-                </div>
-                <div class="accordion-content">
-                    <div id="categoriesList"></div>
-                </div>
-            </div>
         </div>
 
-        <div class="games-grid" id="gamesGrid"></div>
+        <div id="categoriesContainer"></div>
     </div>
 
     <!-- Modal Create Category -->
@@ -696,8 +647,6 @@
             <h2>📁 Créer une catégorie</h2>
             <form id="createCategoryForm" class="auth-form">
                 <input type="text" id="categoryName" placeholder="Nom de la catégorie" required>
-                <input type="text" id="categoryIcon" placeholder="Emoji/Icône (ex: 🎯, 🏆, 🎪)" maxlength="2">
-                <textarea id="categoryDescription" placeholder="Description (optionnel)" rows="3"></textarea>
                 <button type="submit" class="btn-primary">Créer la catégorie</button>
             </form>
         </div>
@@ -760,7 +709,6 @@
             <button class="close-modal" onclick="closeGameModal()">×</button>
             <img id="modalGameImage" style="width: 100%; border-radius: 10px; margin-bottom: 1rem;">
             <h2 id="modalGameTitle"></h2>
-            <div class="game-category-tag" id="modalGameCategory"></div>
             <div class="game-rating" id="modalGameRating"></div>
             <p id="modalGameDescription" style="margin: 1rem 0;"></p>
             <button class="btn-primary" id="downloadBtn" style="width: 100%; margin-bottom: 1rem;">
@@ -809,12 +757,19 @@
         let currentUser = null;
         let currentGameId = null;
         let selectedRating = 0;
-        let selectedCategory = 'all';
         let allCategories = [];
+        let allGames = [];
 
         window.toggleAccordion = function(header) {
             const accordion = header.parentElement;
             accordion.classList.toggle('active');
+        };
+
+        window.toggleCategory = function(categoryId) {
+            const categorySection = document.querySelector(`[data-category-id="${categoryId}"]`);
+            if (categorySection) {
+                categorySection.classList.toggle('active');
+            }
         };
 
         async function loadCategories() {
@@ -830,26 +785,10 @@
                 });
 
                 allCategories.sort((a, b) => a.name.localeCompare(b.name));
-                updateCategoryChips();
                 updateCategorySelects();
-                updateCategoriesList();
             } catch (error) {
                 console.error('Erreur chargement catégories:', error);
             }
-        }
-
-        function updateCategoryChips() {
-            const categoryChips = document.getElementById('categoryChips');
-            categoryChips.innerHTML = '<div class="category-chip active" data-category="all">Tous les jeux</div>';
-            
-            allCategories.forEach(cat => {
-                const chip = document.createElement('div');
-                chip.className = 'category-chip';
-                chip.dataset.category = cat.id;
-                chip.textContent = `${cat.icon || '📁'} ${cat.name}`;
-                chip.onclick = () => filterByCategory(cat.id);
-                categoryChips.appendChild(chip);
-            });
         }
 
         function updateCategorySelects() {
@@ -859,51 +798,100 @@
             allCategories.forEach(cat => {
                 const option = document.createElement('option');
                 option.value = cat.id;
-                option.textContent = `${cat.icon || '📁'} ${cat.name}`;
+                option.textContent = cat.name;
                 gameCategory.appendChild(option);
             });
         }
 
-        function updateCategoriesList() {
-            const categoriesList = document.getElementById('categoriesList');
-            if (!categoriesList) return;
-            
-            categoriesList.innerHTML = '';
-            
+        async function loadGames() {
+            try {
+                const gamesSnapshot = await getDocs(query(collection(db, 'games'), orderBy('createdAt', 'desc')));
+                allGames = [];
+                
+                gamesSnapshot.forEach((docData) => {
+                    allGames.push({
+                        id: docData.id,
+                        ...docData.data()
+                    });
+                });
+
+                displayGamesByCategory();
+            } catch (error) {
+                console.error('Erreur chargement jeux:', error);
+            }
+        }
+
+        function displayGamesByCategory() {
+            const container = document.getElementById('categoriesContainer');
+            container.innerHTML = '';
+
             if (allCategories.length === 0) {
-                categoriesList.innerHTML = '<p style="text-align: center; opacity: 0.7;">Aucune catégorie créée</p>';
+                container.innerHTML = '<div class="empty-category">Aucune catégorie créée. Les admins peuvent en créer via le menu.</div>';
                 return;
             }
 
-            allCategories.forEach(cat => {
-                const catItem = document.createElement('div');
-                catItem.className = 'category-list-item';
-                catItem.innerHTML = `
-                    <div>
-                        <strong>${cat.icon || '📁'} ${cat.name}</strong>
-                        ${cat.description ? `<p style="font-size: 0.85rem; opacity: 0.7; margin-top: 0.3rem;">${cat.description}</p>` : ''}
+            allCategories.forEach(category => {
+                const categoryGames = allGames.filter(game => game.category === category.id);
+                
+                const categorySection = document.createElement('div');
+                categorySection.className = 'category-section';
+                categorySection.setAttribute('data-category-id', category.id);
+                
+                const isAdmin = currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+                
+                categorySection.innerHTML = `
+                    <div class="category-header" onclick="toggleCategory('${category.id}')">
+                        <h2>${category.name}</h2>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            ${isAdmin ? `<button class="btn-small btn-delete" onclick="event.stopPropagation(); deleteCategory('${category.id}', '${category.name}')">🗑️ Supprimer</button>` : ''}
+                            <span class="category-arrow">▼</span>
+                        </div>
                     </div>
-                    <button class="btn-small btn-delete" onclick="deleteCategory('${cat.id}', '${cat.name}')">🗑️</button>
+                    <div class="category-games">
+                        <div class="games-grid" id="games-${category.id}"></div>
+                    </div>
                 `;
-                categoriesList.appendChild(catItem);
+                
+                container.appendChild(categorySection);
+                
+                const gamesGrid = document.getElementById(`games-${category.id}`);
+                
+                if (categoryGames.length === 0) {
+                    gamesGrid.innerHTML = '<div class="empty-category">Aucun jeu dans cette catégorie</div>';
+                } else {
+                    categoryGames.forEach(game => {
+                        const avgRating = calculateAverageRating(game.reviews || []);
+                        
+                        const gameCard = document.createElement('div');
+                        gameCard.className = 'game-card';
+                        gameCard.innerHTML = `
+                            <img src="${game.image}" class="game-image" alt="${game.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22200%22%3E%3Crect fill=%22%2300d4ff%22 width=%22280%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2220%22 fill=%22white%22 text-anchor=%22middle%22 dy=%22.3em%22%3E${game.title}%3C/text%3E%3C/svg%3E'">
+                            <div class="game-info">
+                                <div class="game-title">${game.title}</div>
+                                <div class="game-rating">${displayStars(avgRating)} (${game.reviews?.length || 0} avis)</div>
+                                ${isAdmin ? `
+                                    <div class="game-actions">
+                                        <button class="btn-small btn-edit" onclick="event.stopPropagation(); editGame('${game.id}')">✏️ Modifier</button>
+                                        <button class="btn-small btn-delete" onclick="event.stopPropagation(); deleteGame('${game.id}', '${game.title}')">🗑️ Supprimer</button>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                        
+                        gameCard.addEventListener('click', (e) => {
+                            if (!e.target.classList.contains('btn-small')) {
+                                openGameModal(game.id, game);
+                            }
+                        });
+                        
+                        gamesGrid.appendChild(gameCard);
+                    });
+                }
             });
         }
 
-        window.filterByCategory = function(categoryId) {
-            selectedCategory = categoryId;
-            
-            document.querySelectorAll('.category-chip').forEach(chip => {
-                chip.classList.remove('active');
-                if (chip.dataset.category === categoryId) {
-                    chip.classList.add('active');
-                }
-            });
-            
-            loadGames();
-        };
-
         window.closeCategoryModal = function() {
-            document.getElementById('categoryModal').style.display = 'none';
+            document.getElementById('categoryModal').classList.remove('active');
             document.getElementById('createCategoryForm').reset();
         };
 
@@ -913,21 +901,29 @@
                 return;
             }
 
-            if (!confirm(`Êtes-vous sûr de vouloir supprimer la catégorie "${categoryName}" ?\n\nNote: Les jeux de cette catégorie ne seront pas supprimés.`)) {
+            const gamesInCategory = allGames.filter(g => g.category === categoryId);
+            
+            if (gamesInCategory.length > 0) {
+                alert(`Impossible de supprimer cette catégorie car elle contient ${gamesInCategory.length} jeu(x).\n\nVeuillez d'abord déplacer ou supprimer les jeux de cette catégorie.`);
+                return;
+            }
+
+            if (!confirm(`Êtes-vous sûr de vouloir supprimer la catégorie "${categoryName}" ?`)) {
                 return;
             }
 
             try {
                 await deleteDoc(doc(db, 'categories', categoryId));
-                alert('Catégorie supprimée avec succès!');
-                loadCategories();
+                alert('✅ Catégorie supprimée avec succès!');
+                await loadCategories();
+                await loadGames();
             } catch (error) {
                 alert('Erreur: ' + error.message);
             }
         };
 
         document.getElementById('createCategoryBtn')?.addEventListener('click', () => {
-            document.getElementById('categoryModal').style.display = 'flex';
+            document.getElementById('categoryModal').classList.add('active');
             closeSidebar();
         });
 
@@ -941,8 +937,6 @@
 
             const categoryData = {
                 name: document.getElementById('categoryName').value.trim(),
-                icon: document.getElementById('categoryIcon').value.trim() || '📁',
-                description: document.getElementById('categoryDescription').value.trim(),
                 createdAt: new Date()
             };
 
@@ -950,13 +944,14 @@
                 await addDoc(collection(db, 'categories'), categoryData);
                 alert('✅ Catégorie créée avec succès!');
                 closeCategoryModal();
-                loadCategories();
+                await loadCategories();
+                await loadGames();
             } catch (error) {
                 alert('Erreur: ' + error.message);
             }
         });
 
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             currentUser = user;
             if (user) {
                 document.getElementById('loginBtn').classList.add('hidden');
@@ -991,12 +986,13 @@
                 document.getElementById('adminPanel').classList.add('hidden');
                 closeSidebar();
             }
-            loadCategories();
-            loadGames();
+            
+            await loadCategories();
+            await loadGames();
         });
 
         document.getElementById('loginBtn').addEventListener('click', () => {
-            document.getElementById('authModal').style.display = 'flex';
+            document.getElementById('authModal').classList.add('active');
         });
 
         document.getElementById('emailLoginForm').addEventListener('submit', async (e) => {
@@ -1057,7 +1053,7 @@
         });
 
         document.getElementById('settingsBtn').addEventListener('click', () => {
-            document.getElementById('settingsModal').style.display = 'flex';
+            document.getElementById('settingsModal').classList.add('active');
             closeSidebar();
         });
 
@@ -1067,7 +1063,7 @@
         });
 
         window.closeSettingsModal = () => {
-            document.getElementById('settingsModal').style.display = 'none';
+            document.getElementById('settingsModal').classList.remove('active');
         };
 
         document.getElementById('updateNameBtn').addEventListener('click', async () => {
@@ -1078,7 +1074,7 @@
             }
             try {
                 await updateProfile(currentUser, { displayName: newName });
-                alert('Pseudo mis à jour avec succès!');
+                alert('✅ Pseudo mis à jour avec succès!');
                 document.getElementById('newDisplayName').value = '';
                 window.location.reload();
             } catch (error) {
@@ -1094,7 +1090,7 @@
             }
             try {
                 await updateEmail(currentUser, newEmailValue);
-                alert('Email mis à jour avec succès!');
+                alert('✅ Email mis à jour avec succès!');
                 document.getElementById('newEmail').value = '';
             } catch (error) {
                 if (error.code === 'auth/requires-recent-login') {
@@ -1129,7 +1125,7 @@
                 const credential = EmailAuthProvider.credential(currentUser.email, currentPass);
                 await reauthenticateWithCredential(currentUser, credential);
                 await updatePassword(currentUser, newPass);
-                alert('Mot de passe mis à jour avec succès!');
+                alert('✅ Mot de passe mis à jour avec succès!');
                 document.getElementById('currentPassword').value = '';
                 document.getElementById('newPassword').value = '';
                 document.getElementById('confirmPassword').value = '';
@@ -1167,64 +1163,13 @@
 
             try {
                 await addDoc(collection(db, 'games'), gameData);
-                alert('Jeu publié avec succès!');
+                alert('✅ Jeu publié avec succès!');
                 document.getElementById('addGameForm').reset();
-                loadGames();
+                await loadGames();
             } catch (error) {
                 alert('Erreur: ' + error.message);
             }
         });
-
-        async function loadGames() {
-            const gamesGrid = document.getElementById('gamesGrid');
-            gamesGrid.innerHTML = '';
-            const isAdmin = currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-
-            try {
-                const q = query(collection(db, 'games'), orderBy('createdAt', 'desc'));
-                const querySnapshot = await getDocs(q);
-                
-                querySnapshot.forEach((docData) => {
-                    const game = docData.data();
-                    
-                    if (selectedCategory !== 'all' && game.category !== selectedCategory) {
-                        return;
-                    }
-
-                    const categoryInfo = allCategories.find(cat => cat.id === game.category);
-                    const avgRating = calculateAverageRating(game.reviews || []);
-                    
-                    const gameCard = document.createElement('div');
-                    gameCard.className = 'game-card';
-                    gameCard.innerHTML = `
-                        <img src="${game.image}" class="game-image" alt="${game.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22200%22%3E%3Crect fill=%22%2300d4ff%22 width=%22280%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2220%22 fill=%22white%22 text-anchor=%22middle%22 dy=%22.3em%22%3E${game.title}%3C/text%3E%3C/svg%3E'">
-                        <div class="game-info">
-                            <div class="game-title">${game.title}</div>
-                            ${categoryInfo ? `<div class="game-category-tag">${categoryInfo.icon || '📁'} ${categoryInfo.name}</div>` : ''}
-                            <div class="game-rating">${displayStars(avgRating)} (${game.reviews?.length || 0} avis)</div>
-                            ${isAdmin ? `
-                                <div class="game-actions">
-                                    <button class="btn-small btn-edit" onclick="editGame('${docData.id}')">✏️ Modifier</button>
-                                    <button class="btn-small btn-delete" onclick="deleteGame('${docData.id}', '${game.title}')">🗑️ Supprimer</button>
-                                </div>
-                            ` : ''}
-                        </div>
-                    `;
-                    gameCard.addEventListener('click', (e) => {
-                        if (!e.target.classList.contains('btn-small')) {
-                            openGameModal(docData.id, game);
-                        }
-                    });
-                    gamesGrid.appendChild(gameCard);
-                });
-
-                if (gamesGrid.children.length === 0) {
-                    gamesGrid.innerHTML = '<p style="text-align: center; opacity: 0.7; grid-column: 1/-1;">Aucun jeu dans cette catégorie</p>';
-                }
-            } catch (error) {
-                console.error('Erreur de chargement:', error);
-            }
-        }
 
         window.deleteGame = async (gameId, gameTitle) => {
             if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
@@ -1238,8 +1183,8 @@
 
             try {
                 await deleteDoc(doc(db, 'games', gameId));
-                alert('Jeu supprimé avec succès!');
-                loadGames();
+                alert('✅ Jeu supprimé avec succès!');
+                await loadGames();
             } catch (error) {
                 alert('Erreur lors de la suppression: ' + error.message);
             }
@@ -1269,7 +1214,7 @@
 
                 const form = document.getElementById('addGameForm');
                 const submitBtn = form.querySelector('button[type="submit"]');
-                submitBtn.textContent = 'Mettre à jour le jeu';
+                submitBtn.textContent = '✏️ Mettre à jour le jeu';
                 
                 const newForm = form.cloneNode(true);
                 form.parentNode.replaceChild(newForm, form);
@@ -1287,7 +1232,7 @@
 
                     try {
                         await updateDoc(doc(db, 'games', gameId), updatedData);
-                        alert('Jeu mis à jour avec succès!');
+                        alert('✅ Jeu mis à jour avec succès!');
                         window.location.reload();
                     } catch (error) {
                         alert('Erreur: ' + error.message);
@@ -1312,18 +1257,9 @@
 
         function openGameModal(gameId, game) {
             currentGameId = gameId;
-            document.getElementById('gameModal').style.display = 'flex';
+            document.getElementById('gameModal').classList.add('active');
             document.getElementById('modalGameImage').src = game.image;
             document.getElementById('modalGameTitle').textContent = game.title;
-            
-            const categoryInfo = allCategories.find(cat => cat.id === game.category);
-            if (categoryInfo) {
-                document.getElementById('modalGameCategory').textContent = `${categoryInfo.icon || '📁'} ${categoryInfo.name}`;
-                document.getElementById('modalGameCategory').style.display = 'inline-block';
-            } else {
-                document.getElementById('modalGameCategory').style.display = 'none';
-            }
-            
             document.getElementById('modalGameDescription').textContent = game.description;
             document.getElementById('modalGameRating').textContent = displayStars(calculateAverageRating(game.reviews || []));
             
@@ -1335,7 +1271,7 @@
         }
 
         window.closeGameModal = () => {
-            document.getElementById('gameModal').style.display = 'none';
+            document.getElementById('gameModal').classList.remove('active');
             currentGameId = null;
             selectedRating = 0;
             document.getElementById('reviewText').value = '';
@@ -1343,7 +1279,7 @@
         };
 
         window.closeAuthModal = () => {
-            document.getElementById('authModal').style.display = 'none';
+            document.getElementById('authModal').classList.remove('active');
         };
 
         document.querySelectorAll('#ratingStars span').forEach(star => {
@@ -1387,7 +1323,7 @@
                 await updateDoc(gameRef, {
                     reviews: arrayUnion(review)
                 });
-                alert('Avis publié avec succès!');
+                alert('✅ Avis publié avec succès!');
                 selectedRating = 0;
                 document.getElementById('reviewText').value = '';
                 updateStarDisplay();
@@ -1399,7 +1335,7 @@
                     displayReviews(gameData.reviews || []);
                 }
                 
-                loadGames();
+                await loadGames();
             } catch (error) {
                 alert('Erreur: ' + error.message);
             }
@@ -1410,7 +1346,7 @@
             reviewsList.innerHTML = '<h3>Avis des joueurs</h3>';
             
             if (reviews.length === 0) {
-                reviewsList.innerHTML += '<p>Aucun avis pour le moment</p>';
+                reviewsList.innerHTML += '<p style="opacity: 0.7;">Aucun avis pour le moment</p>';
                 return;
             }
 
@@ -1419,9 +1355,12 @@
                 reviewItem.className = 'review-item';
                 reviewItem.innerHTML = `
                     <strong>${review.userName}</strong> - ${displayStars(review.rating)}
-                    <p>${review.text}</p>
-                    <small>${review.date}</small>
+                    <p style="margin: 0.5rem 0;">${review.text}</p>
+                    <small style="opacity: 0.7;">${review.date}</small>
                 `;
                 reviewsList.appendChild(reviewItem);
             });
         }
+    </script>
+</body>
+</html>
