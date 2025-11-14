@@ -1007,6 +1007,12 @@
                 <div class="sidebar-item hidden" id="adminPanelBtn">
                     🛠️ Panel Admin
                 </div>
+                <div class="sidebar-item hidden" id="userManagementBtn">
+                    👥 Gestion des utilisateurs
+                </div>
+                <div class="sidebar-item hidden" id="announcementBtn">
+                    📢 Faire une annonce
+                </div>
                 <div class="sidebar-item hidden" id="createCategoryBtn">
                     📁 Créer une catégorie
                 </div>
@@ -1211,9 +1217,9 @@
                     <textarea id="adminResponseText" placeholder="Écrire une réponse..." rows="4" style="margin-bottom: 1rem;"></textarea>
                     <div style="display: flex; gap: 1rem;">
                         <button class="btn-primary" id="sendResponseBtn" style="flex: 1;">✅ Valider et répondre</button>
-                        <button class="btn-small btn-delete" id="deleteRequestBtn" style="flex: 1;">🗑️ Supprimer</button>
                     </div>
                 </div>
+                <button class="btn-small btn-delete" id="deleteRequestBtn" style="width: 100%; margin-top: 1rem;">🗑️ Supprimer cette suggestion</button>
             </div>
         </div>
     </div>
@@ -1702,6 +1708,14 @@
                 
                 document.getElementById('sidebarUserName').textContent = user.displayName || user.email.split('@')[0];
                 document.getElementById('sidebarUserEmail').textContent = user.email;
+                
+                // Notification de connexion
+                await createNotification(
+                    user.uid,
+                    '🔐 Nouvelle connexion détectée',
+                    `Vous vous êtes connecté le ${new Date().toLocaleString()}. Si ce n'est pas vous, changez immédiatement votre mot de passe.`,
+                    'security'
+                );
                 
                 const isAdmin = user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
                 const permissionBadge = document.getElementById('sidebarPermission');
@@ -2199,14 +2213,19 @@
             
             const adminResponseDisplay = document.getElementById('adminResponseDisplay');
             const adminResponseForm = document.getElementById('adminResponseForm');
+            const deleteBtn = document.getElementById('deleteRequestBtn');
             
             if (request.response) {
                 adminResponseDisplay.textContent = request.response;
                 adminResponseDisplay.classList.remove('hidden');
-                adminResponseForm.classList.add('hidden');
+                adminResponseForm.style.display = 'none';
+                deleteBtn.style.display = 'block';
+                deleteBtn.style.width = '100%';
             } else {
                 adminResponseDisplay.classList.add('hidden');
-                adminResponseForm.classList.remove('hidden');
+                adminResponseForm.style.display = 'block';
+                deleteBtn.style.display = 'block';
+                deleteBtn.style.width = 'auto';
                 document.getElementById('adminResponseText').value = '';
             }
             
