@@ -229,7 +229,7 @@
 
         .search-input {
             width: 100%;
-            padding: 1rem 3rem 1rem 1.5rem;
+            padding: 1.2rem 3.5rem 1.2rem 1.5rem;
             border-radius: 50px;
             border: 2px solid rgba(0, 212, 255, 0.3);
             background: rgba(255, 255, 255, 0.1);
@@ -290,6 +290,103 @@
             margin-top: 1rem;
             color: rgba(255, 255, 255, 0.7);
             font-size: 0.95rem;
+        }
+
+        .btn-suggestion {
+            background: linear-gradient(45deg, #ffd700, #ff8c00);
+            border: none;
+            color: white;
+            padding: 1.2rem 2rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+            flex-shrink: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            white-space: nowrap;
+        }
+
+        .btn-suggestion:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.6);
+            background: linear-gradient(45deg, #ffdd00, #ffa500);
+        }
+
+        .btn-suggestion:active {
+            transform: translateY(0);
+        }
+
+        .suggestion-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .suggestion-item:hover {
+            background: rgba(0, 212, 255, 0.1);
+            border-color: rgba(0, 212, 255, 0.3);
+            transform: translateX(5px);
+        }
+
+        .suggestion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .suggestion-user {
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
+        .suggestion-date {
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        .suggestion-preview {
+            opacity: 0.8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .suggestion-detail-content {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .response-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-response {
+            background: rgba(0, 212, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            border-left: 4px solid #00d4ff;
+        }
+
+        .no-suggestions {
+            text-align: center;
+            padding: 2rem;
+            opacity: 0.7;
         }
 
         /* Category Section */
@@ -667,6 +764,20 @@
             .welcome-message p {
                 font-size: 1rem;
             }
+
+            .btn-suggestion {
+                padding: 1rem 1.2rem;
+                font-size: 0.95rem;
+            }
+
+            .search-container > div {
+                flex-direction: column;
+                max-width: 100% !important;
+            }
+
+            .search-wrapper {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -709,6 +820,9 @@
                 <div class="sidebar-item hidden" id="createCategoryBtn">
                     📁 Créer une catégorie
                 </div>
+                <div class="sidebar-item hidden" id="requestsBtn">
+                    📬 Demandes de jeux
+                </div>
                 <div class="sidebar-item" id="logoutBtnSidebar">
                     🚪 Déconnexion
                 </div>
@@ -731,12 +845,12 @@
 
         <!-- Barre de recherche -->
         <div class="search-container">
-            <div style="display: flex; gap: 1rem; align-items: center; max-width: 650px; margin: 0 auto;">
-                <button class="btn-suggestion" id="suggestionBtn" title="Suggérer un jeu">
-                    💡
+            <div style="display: flex; gap: 1rem; align-items: stretch; max-width: 900px; margin: 0 auto;">
+                <button class="btn-suggestion" id="suggestionBtn">
+                    💡 Suggérer un jeu
                 </button>
                 <div class="search-wrapper" style="flex: 1;">
-                    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Rechercher un jeu...">
+                    <input type="text" id="searchInput" class="search-input" placeholder="Rechercher un jeu...">
                     <button class="clear-search" id="clearSearch">×</button>
                     <span class="search-icon">🔍</span>
                 </div>
@@ -864,6 +978,56 @@
         </div>
     </div>
 
+    <!-- Modal Suggestion -->
+    <div id="suggestionModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeSuggestionModal()">×</button>
+            <h2>💡 Suggérer un jeu</h2>
+            <form id="suggestionForm" class="auth-form">
+                <p style="opacity: 0.8; margin-bottom: 1rem;">Dites-nous quel jeu vous aimeriez voir sur la plateforme !</p>
+                <input type="text" id="suggestionTitle" placeholder="Nom du jeu" required>
+                <textarea id="suggestionMessage" placeholder="Pourquoi ce jeu ? Décrivez-le brièvement..." rows="5" required></textarea>
+                <button type="submit" class="btn-primary">📤 Envoyer la suggestion</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Requests Admin -->
+    <div id="requestsModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeRequestsModal()">×</button>
+            <h2>📬 Demandes de jeux</h2>
+            <div id="requestsList" style="max-height: 60vh; overflow-y: auto;"></div>
+        </div>
+    </div>
+
+    <!-- Modal Request Detail -->
+    <div id="requestDetailModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeRequestDetailModal()">×</button>
+            <h2 id="detailRequestTitle"></h2>
+            <div class="suggestion-detail-content">
+                <div class="suggestion-header">
+                    <span class="suggestion-user" id="detailRequestUser"></span>
+                    <span class="suggestion-date" id="detailRequestDate"></span>
+                </div>
+                <p id="detailRequestMessage" style="margin-top: 1rem; line-height: 1.6;"></p>
+            </div>
+            
+            <div class="response-section" id="responseSection">
+                <h3>Réponse de l'administrateur</h3>
+                <div id="adminResponseDisplay" class="admin-response hidden"></div>
+                <div id="adminResponseForm">
+                    <textarea id="adminResponseText" placeholder="Écrire une réponse..." rows="4" style="margin-bottom: 1rem;"></textarea>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="btn-primary" id="sendResponseBtn" style="flex: 1;">✅ Valider et répondre</button>
+                        <button class="btn-small btn-delete" id="deleteRequestBtn" style="flex: 1;">🗑️ Supprimer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
@@ -890,6 +1054,8 @@
         let allCategories = [];
         let allGames = [];
         let searchQuery = '';
+        let allRequests = [];
+        let currentRequestId = null;
 
         window.toggleAccordion = function(header) {
             const accordion = header.parentElement;
@@ -1199,11 +1365,13 @@
                     document.getElementById('adminPanel').classList.remove('hidden');
                     document.getElementById('adminPanelBtn').classList.remove('hidden');
                     document.getElementById('createCategoryBtn').classList.remove('hidden');
+                    document.getElementById('requestsBtn').classList.remove('hidden');
                     permissionBadge.innerHTML = '<span class="permission-badge badge-admin">👑 ADMINISTRATEUR</span>';
                 } else {
                     document.getElementById('adminPanel').classList.add('hidden');
                     document.getElementById('adminPanelBtn').classList.add('hidden');
                     document.getElementById('createCategoryBtn').classList.add('hidden');
+                    document.getElementById('requestsBtn').classList.add('hidden');
                     permissionBadge.innerHTML = '<span class="permission-badge badge-member">👤 MEMBRE</span>';
                 }
                 
@@ -1219,6 +1387,7 @@
             
             await loadCategories();
             await loadGames();
+            await loadRequests();
         });
 
         document.getElementById('loginBtn').addEventListener('click', () => {
@@ -1511,6 +1680,206 @@
         window.closeAuthModal = () => {
             document.getElementById('authModal').classList.remove('active');
         };
+
+        window.closeSuggestionModal = () => {
+            document.getElementById('suggestionModal').classList.remove('active');
+            document.getElementById('suggestionForm').reset();
+        };
+
+        window.closeRequestsModal = () => {
+            document.getElementById('requestsModal').classList.remove('active');
+        };
+
+        window.closeRequestDetailModal = () => {
+            document.getElementById('requestDetailModal').classList.remove('active');
+            currentRequestId = null;
+        };
+
+        // Bouton de suggestion
+        document.getElementById('suggestionBtn').addEventListener('click', function() {
+            console.log('Bouton suggestion cliqué');
+            if (!currentUser) {
+                alert('Vous devez être connecté pour suggérer un jeu');
+                document.getElementById('authModal').classList.add('active');
+                return;
+            }
+            document.getElementById('suggestionModal').classList.add('active');
+        });
+
+        // Formulaire de suggestion
+        document.getElementById('suggestionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                alert('Vous devez être connecté');
+                return;
+            }
+
+            const suggestionData = {
+                userId: currentUser.uid,
+                userName: currentUser.displayName || currentUser.email.split('@')[0],
+                userEmail: currentUser.email,
+                title: document.getElementById('suggestionTitle').value.trim(),
+                message: document.getElementById('suggestionMessage').value.trim(),
+                createdAt: new Date(),
+                status: 'pending',
+                response: null
+            };
+
+            try {
+                await addDoc(collection(db, 'suggestions'), suggestionData);
+                alert('✅ Suggestion envoyée avec succès! Les admins la consulteront bientôt.');
+                closeSuggestionModal();
+            } catch (error) {
+                alert('Erreur: ' + error.message);
+            }
+        });
+
+        // Charger les demandes
+        async function loadRequests() {
+            try {
+                const requestsSnapshot = await getDocs(query(collection(db, 'suggestions'), orderBy('createdAt', 'desc')));
+                allRequests = [];
+                
+                requestsSnapshot.forEach((docData) => {
+                    allRequests.push({
+                        id: docData.id,
+                        ...docData.data()
+                    });
+                });
+
+                if (currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+                    updateRequestsBadge();
+                }
+            } catch (error) {
+                console.error('Erreur chargement demandes:', error);
+            }
+        }
+
+        function updateRequestsBadge() {
+            const requestsBtn = document.getElementById('requestsBtn');
+            const pendingCount = allRequests.filter(r => r.status === 'pending').length;
+            
+            if (pendingCount > 0) {
+                requestsBtn.innerHTML = `📬 Demandes de jeux <span style="background: #ff0000; color: white; padding: 0.2rem 0.5rem; border-radius: 10px; font-size: 0.8rem; margin-left: 0.5rem;">${pendingCount}</span>`;
+            } else {
+                requestsBtn.innerHTML = '📬 Demandes de jeux';
+            }
+        }
+
+        // Afficher les demandes
+        document.getElementById('requestsBtn')?.addEventListener('click', () => {
+            displayRequests();
+            document.getElementById('requestsModal').classList.add('active');
+            closeSidebar();
+        });
+
+        function displayRequests() {
+            const requestsList = document.getElementById('requestsList');
+            requestsList.innerHTML = '';
+
+            if (allRequests.length === 0) {
+                requestsList.innerHTML = '<div class="no-suggestions">Aucune demande pour le moment</div>';
+                return;
+            }
+
+            allRequests.forEach(request => {
+                const requestItem = document.createElement('div');
+                requestItem.className = 'suggestion-item';
+                
+                const statusEmoji = request.status === 'pending' ? '🕒' : request.status === 'approved' ? '✅' : '❌';
+                
+                requestItem.innerHTML = `
+                    <div class="suggestion-header">
+                        <span class="suggestion-user">${statusEmoji} ${request.userName}</span>
+                        <span class="suggestion-date">${new Date(request.createdAt.toDate()).toLocaleDateString()}</span>
+                    </div>
+                    <div style="font-weight: bold; margin: 0.5rem 0;">${request.title}</div>
+                    <div class="suggestion-preview">${request.message}</div>
+                `;
+                
+                requestItem.addEventListener('click', () => {
+                    openRequestDetail(request.id, request);
+                });
+                
+                requestsList.appendChild(requestItem);
+            });
+        }
+
+        function openRequestDetail(requestId, request) {
+            currentRequestId = requestId;
+            
+            document.getElementById('detailRequestTitle').textContent = request.title;
+            document.getElementById('detailRequestUser').textContent = request.userName;
+            document.getElementById('detailRequestDate').textContent = new Date(request.createdAt.toDate()).toLocaleString();
+            document.getElementById('detailRequestMessage').textContent = request.message;
+            
+            // Afficher la réponse si elle existe
+            const adminResponseDisplay = document.getElementById('adminResponseDisplay');
+            const adminResponseForm = document.getElementById('adminResponseForm');
+            
+            if (request.response) {
+                adminResponseDisplay.textContent = request.response;
+                adminResponseDisplay.classList.remove('hidden');
+                adminResponseForm.classList.add('hidden');
+            } else {
+                adminResponseDisplay.classList.add('hidden');
+                adminResponseForm.classList.remove('hidden');
+                document.getElementById('adminResponseText').value = '';
+            }
+            
+            closeRequestsModal();
+            document.getElementById('requestDetailModal').classList.add('active');
+        }
+
+        // Répondre à une demande
+        document.getElementById('sendResponseBtn').addEventListener('click', async () => {
+            if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+                alert('Accès refusé');
+                return;
+            }
+
+            const response = document.getElementById('adminResponseText').value.trim();
+            if (!response) {
+                alert('Veuillez écrire une réponse');
+                return;
+            }
+
+            try {
+                await updateDoc(doc(db, 'suggestions', currentRequestId), {
+                    status: 'approved',
+                    response: response,
+                    respondedAt: new Date()
+                });
+                
+                alert('✅ Réponse envoyée et suggestion validée!');
+                closeRequestDetailModal();
+                await loadRequests();
+            } catch (error) {
+                alert('Erreur: ' + error.message);
+            }
+        });
+
+        // Supprimer une demande
+        document.getElementById('deleteRequestBtn').addEventListener('click', async () => {
+            if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+                alert('Accès refusé');
+                return;
+            }
+
+            if (!confirm('Êtes-vous sûr de vouloir supprimer cette demande ?')) {
+                return;
+            }
+
+            try {
+                await deleteDoc(doc(db, 'suggestions', currentRequestId));
+                alert('✅ Demande supprimée!');
+                closeRequestDetailModal();
+                await loadRequests();
+            } catch (error) {
+                alert('Erreur: ' + error.message);
+            }
+        });
 
         document.querySelectorAll('#ratingStars span').forEach(star => {
             star.addEventListener('click', (e) => {
