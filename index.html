@@ -165,10 +165,6 @@
             box-shadow: 0 6px 20px rgba(0, 212, 255, 0.6);
         }
 
-        .nav-buttons button:active {
-            transform: translateY(0);
-        }
-
         .settings-section {
             margin-top: 1rem;
         }
@@ -197,35 +193,6 @@
             color: white;
         }
 
-        .game-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-
-        .btn-small {
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-edit {
-            background: linear-gradient(45deg, #4ecdc4, #00d4ff);
-            color: white;
-        }
-
-        .btn-delete {
-            background: linear-gradient(45deg, #ff6b6b, #ff0000);
-            color: white;
-        }
-
-        .btn-small:hover {
-            transform: scale(1.05);
-        }
-
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -242,6 +209,50 @@
             justify-content: space-between;
             align-items: center;
             border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        /* Categories Filter */
+        .categories-filter {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .categories-filter h3 {
+            color: #00d4ff;
+            margin-bottom: 1rem;
+        }
+
+        .category-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .category-chip {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .category-chip:hover {
+            background: rgba(0, 212, 255, 0.2);
+            border-color: rgba(0, 212, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .category-chip.active {
+            background: linear-gradient(45deg, #00d4ff, #ff00ea);
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
         }
 
         .games-grid {
@@ -281,6 +292,16 @@
         .game-title {
             font-size: 1.3rem;
             font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .game-category-tag {
+            display: inline-block;
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
             margin-bottom: 0.5rem;
         }
 
@@ -341,7 +362,7 @@
             gap: 1rem;
         }
 
-        .auth-form input {
+        .auth-form input, .auth-form select, .auth-form textarea {
             padding: 1rem;
             border-radius: 10px;
             border: 2px solid rgba(255, 255, 255, 0.3);
@@ -350,8 +371,17 @@
             font-size: 1rem;
         }
 
-        .auth-form input::placeholder {
+        .auth-form input::placeholder, .auth-form textarea::placeholder {
             color: rgba(255, 255, 255, 0.6);
+        }
+
+        .auth-form select {
+            cursor: pointer;
+        }
+
+        .auth-form select option {
+            background: #16213e;
+            color: white;
         }
 
         .btn-primary {
@@ -451,18 +481,10 @@
             padding: 1rem;
             border-radius: 10px;
             margin-bottom: 0.8rem;
-            cursor: pointer;
-            transition: all 0.3s;
             border: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-        }
-
-        .user-list-item:hover {
-            background: rgba(0, 212, 255, 0.1);
-            border-color: rgba(0, 212, 255, 0.3);
-            transform: translateX(5px);
         }
 
         .user-info-preview {
@@ -480,115 +502,44 @@
             margin-left: 0.5rem;
         }
 
-        .user-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .user-modal-content {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            padding: 2rem;
-            border-radius: 20px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            border: 2px solid rgba(0, 212, 255, 0.3);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-        }
-
-        .user-detail-section {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 1rem;
-            border-radius: 10px;
-            margin-bottom: 1rem;
-        }
-
-        .user-detail-section h4 {
-            color: #00d4ff;
-            margin-bottom: 0.8rem;
-        }
-
-        .user-detail-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .user-detail-row:last-child {
-            border-bottom: none;
-        }
-
-        .user-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .review-section {
-            margin-top: 1.5rem;
-        }
-
-        .review-item {
+        .category-list-item {
             background: rgba(0, 0, 0, 0.3);
             padding: 1rem;
             border-radius: 10px;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .admin-response {
-            background: rgba(0, 212, 255, 0.1);
-            border-left: 3px solid #00d4ff;
-            padding: 1rem;
-            margin-top: 0.8rem;
-            border-radius: 8px;
-        }
-
-        .admin-response-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-            color: #00d4ff;
-            font-weight: bold;
         }
 
-        .admin-response-badge {
-            background: linear-gradient(45deg, #ff6b6b, #ff00ea);
-            padding: 0.2rem 0.6rem;
-            border-radius: 10px;
-            font-size: 0.75rem;
-        }
-
-        .reply-form {
-            margin-top: 0.8rem;
-            padding: 0.8rem;
-            background: rgba(255, 255, 255, 0.05);
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
             border-radius: 8px;
-        }
-
-        .reply-form textarea {
-            width: 100%;
-            min-height: 80px;
-            margin-bottom: 0.5rem;
-        }
-
-        .stars {
-            color: #ffd700;
+            border: none;
             cursor: pointer;
-            font-size: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background: linear-gradient(45deg, #4ecdc4, #00d4ff);
+            color: white;
+        }
+
+        .btn-delete {
+            background: linear-gradient(45deg, #ff6b6b, #ff0000);
+            color: white;
+        }
+
+        .btn-small:hover {
+            transform: scale(1.05);
+        }
+
+        .game-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
         }
 
         .hidden {
@@ -606,47 +557,37 @@
             resize: vertical;
         }
 
-        textarea::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .btn-reply {
-            background: linear-gradient(45deg, #4ecdc4, #00d4ff);
-            color: white;
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 8px;
+        .stars {
+            color: #ffd700;
             cursor: pointer;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-            transition: all 0.3s;
+            font-size: 1.5rem;
         }
 
-        .btn-reply:hover {
-            transform: scale(1.05);
+        .review-section {
+            margin-top: 1.5rem;
         }
 
-        .btn-delete-review {
-            background: linear-gradient(45deg, #ff6b6b, #ff0000);
-            color: white;
-            padding: 0.4rem 0.8rem;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-            transition: all 0.3s;
+        .review-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .btn-delete-review:hover {
-            transform: scale(1.05);
-        }
+        @media (max-width: 768px) {
+            .games-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 1rem;
+            }
 
-        .review-admin-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.8rem;
-            flex-wrap: wrap;
+            .header {
+                padding: 1rem;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
@@ -663,7 +604,6 @@
         </div>
     </div>
 
-    <!-- Sidebar Menu -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -687,6 +627,9 @@
                 <div class="sidebar-item hidden" id="adminPanelBtn">
                     🛠️ Panel Admin
                 </div>
+                <div class="sidebar-item hidden" id="createCategoryBtn">
+                    📁 Créer une catégorie
+                </div>
                 <div class="sidebar-item" id="logoutBtnSidebar">
                     🚪 Déconnexion
                 </div>
@@ -702,10 +645,17 @@
             </div>
         </div>
 
+        <!-- Categories Filter -->
+        <div class="categories-filter">
+            <h3>🎯 Catégories</h3>
+            <div class="category-chips" id="categoryChips">
+                <div class="category-chip active" data-category="all">Tous les jeux</div>
+            </div>
+        </div>
+
         <div id="adminPanel" class="admin-panel hidden">
             <h2>🛠️ Panel Administrateur</h2>
             
-            <!-- Accordéon Ajouter un jeu -->
             <div class="accordion">
                 <div class="accordion-header" onclick="toggleAccordion(this)">
                     <h3>🎮 Ajouter un jeu</h3>
@@ -714,6 +664,9 @@
                 <div class="accordion-content">
                     <form id="addGameForm" class="auth-form">
                         <input type="text" id="gameTitle" placeholder="Titre du jeu" required>
+                        <select id="gameCategory" required>
+                            <option value="">Sélectionner une catégorie</option>
+                        </select>
                         <input type="url" id="gameImage" placeholder="URL de l'image" required>
                         <textarea id="gameDescription" placeholder="Description" rows="4" required></textarea>
                         <input type="url" id="gameDownloadUrl" placeholder="URL de téléchargement" required>
@@ -722,14 +675,13 @@
                 </div>
             </div>
 
-            <!-- Accordéon LookPanel -->
             <div class="accordion">
                 <div class="accordion-header" onclick="toggleAccordion(this)">
-                    <h3>👥 LookPanel - Gestion des utilisateurs</h3>
+                    <h3>📁 Gérer les catégories</h3>
                     <span class="accordion-icon">▼</span>
                 </div>
                 <div class="accordion-content">
-                    <div id="usersList"></div>
+                    <div id="categoriesList"></div>
                 </div>
             </div>
         </div>
@@ -737,7 +689,21 @@
         <div class="games-grid" id="gamesGrid"></div>
     </div>
 
-    <!-- Modal de paramètres -->
+    <!-- Modal Create Category -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeCategoryModal()">×</button>
+            <h2>📁 Créer une catégorie</h2>
+            <form id="createCategoryForm" class="auth-form">
+                <input type="text" id="categoryName" placeholder="Nom de la catégorie" required>
+                <input type="text" id="categoryIcon" placeholder="Emoji/Icône (ex: 🎯, 🏆, 🎪)" maxlength="2">
+                <textarea id="categoryDescription" placeholder="Description (optionnel)" rows="3"></textarea>
+                <button type="submit" class="btn-primary">Créer la catégorie</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Settings -->
     <div id="settingsModal" class="modal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeSettingsModal()">×</button>
@@ -764,7 +730,7 @@
         </div>
     </div>
 
-    <!-- Modal de connexion -->
+    <!-- Modal Auth -->
     <div id="authModal" class="modal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeAuthModal()">×</button>
@@ -788,12 +754,13 @@
         </div>
     </div>
 
-    <!-- Modal de jeu -->
+    <!-- Modal Game -->
     <div id="gameModal" class="modal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeGameModal()">×</button>
             <img id="modalGameImage" style="width: 100%; border-radius: 10px; margin-bottom: 1rem;">
             <h2 id="modalGameTitle"></h2>
+            <div class="game-category-tag" id="modalGameCategory"></div>
             <div class="game-rating" id="modalGameRating"></div>
             <p id="modalGameDescription" style="margin: 1rem 0;"></p>
             <button class="btn-primary" id="downloadBtn" style="width: 100%; margin-bottom: 1rem;">
@@ -819,74 +786,11 @@
         </div>
     </div>
 
-    <!-- Modal de gestion utilisateur -->
-    <div id="userModal" class="user-modal">
-        <div class="user-modal-content">
-            <button class="close-modal" onclick="closeUserModal()">×</button>
-            <h2>👤 Gestion de l'utilisateur</h2>
-            
-            <div class="user-detail-section">
-                <h4>📋 Informations générales</h4>
-                <div class="user-detail-row">
-                    <strong>Pseudo:</strong>
-                    <span id="modalUserName"></span>
-                </div>
-                <div class="user-detail-row">
-                    <strong>Email:</strong>
-                    <span id="modalUserEmail"></span>
-                </div>
-                <div class="user-detail-row">
-                    <strong>UID:</strong>
-                    <span id="modalUserUid"></span>
-                </div>
-                <div class="user-detail-row">
-                    <strong>Date de création:</strong>
-                    <span id="modalUserCreated"></span>
-                </div>
-                <div class="user-detail-row">
-                    <strong>Dernière connexion:</strong>
-                    <span id="modalUserLastLogin"></span>
-                </div>
-            </div>
-
-            <div class="user-detail-section">
-                <h4>🌐 Informations techniques</h4>
-                <div class="user-detail-row">
-                    <strong>Adresse IP:</strong>
-                    <span id="modalUserIp">Non disponible</span>
-                </div>
-                <div class="user-detail-row">
-                    <strong>Plateforme:</strong>
-                    <span id="modalUserPlatform"></span>
-                </div>
-                <div class="user-detail-row">
-                    <strong>Navigateur:</strong>
-                    <span id="modalUserBrowser"></span>
-                </div>
-            </div>
-
-            <div class="user-detail-section">
-                <h4>✏️ Modifier les informations</h4>
-                <form id="editUserForm" class="auth-form">
-                    <input type="text" id="editUserName" placeholder="Nouveau pseudo">
-                    <input type="email" id="editUserEmail" placeholder="Nouvel email">
-                    <input type="password" id="editUserPassword" placeholder="Nouveau mot de passe (min 6 caractères)">
-                </form>
-            </div>
-
-            <div class="user-actions">
-                <button class="btn-primary" onclick="updateUserInfo()">💾 Enregistrer les modifications</button>
-                <button class="btn-small btn-delete" onclick="deleteUserAccount()" style="flex: 1;">🗑️ Supprimer le compte</button>
-            </div>
-        </div>
-    </div>
-
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut, updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
         import { getFirestore, collection, addDoc, getDocs, query, orderBy, doc, updateDoc, arrayUnion, deleteDoc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
-        // Configuration Firebase (clés encodées pour sécurité)
         const firebaseConfig = {
             apiKey: atob('QUl6YVN5Q1FrYTdxTFFFWF9LTjRqeGlMUUdGdmc3TUhQQjBxenEw'),
             authDomain: atob('a3Jhc2xleS00ZTFkYy5maXJlYmFzZWFwcC5jb20='),
@@ -905,220 +809,162 @@
         let currentUser = null;
         let currentGameId = null;
         let selectedRating = 0;
-        let selectedUserForEdit = null;
+        let selectedCategory = 'all';
+        let allCategories = [];
 
-        // Obtenir l'adresse IP via ipify
-        async function getUserIP() {
-            try {
-                const response = await fetch('https://api.ipify.org?format=json');
-                const data = await response.json();
-                return data.ip;
-            } catch (error) {
-                console.error('Erreur récupération IP:', error);
-                return 'Non disponible';
-            }
-        }
-
-        // Fonction pour obtenir les infos du navigateur
-        function getBrowserInfo() {
-            const ua = navigator.userAgent;
-            let browser = "Inconnu";
-            if (ua.indexOf("Firefox") > -1) browser = "Firefox";
-            else if (ua.indexOf("SamsungBrowser") > -1) browser = "Samsung Internet";
-            else if (ua.indexOf("Opera") > -1 || ua.indexOf("OPR") > -1) browser = "Opera";
-            else if (ua.indexOf("Trident") > -1) browser = "Internet Explorer";
-            else if (ua.indexOf("Edge") > -1) browser = "Edge";
-            else if (ua.indexOf("Chrome") > -1) browser = "Chrome";
-            else if (ua.indexOf("Safari") > -1) browser = "Safari";
-            return browser;
-        }
-
-        // Fonction pour obtenir la plateforme
-        function getPlatform() {
-            const ua = navigator.userAgent;
-            if (/android/i.test(ua)) return "Android";
-            if (/iPad|iPhone|iPod/.test(ua)) return "iOS";
-            if (/Win/i.test(ua)) return "Windows";
-            if (/Mac/i.test(ua)) return "MacOS";
-            if (/Linux/i.test(ua)) return "Linux";
-            return "Inconnu";
-        }
-
-        // Sauvegarder les infos utilisateur à la connexion
-        async function saveUserInfo(user) {
-            try {
-                const userRef = doc(db, 'users', user.uid);
-                const userDoc = await getDoc(userRef);
-                
-                // Récupérer l'IP
-                const ipAddress = await getUserIP();
-                
-                const userData = {
-                    uid: user.uid,
-                    email: user.email,
-                    displayName: user.displayName || user.email.split('@')[0],
-                    lastLogin: new Date(),
-                    platform: getPlatform(),
-                    browser: getBrowserInfo(),
-                    ipAddress: ipAddress
-                };
-
-                if (!userDoc.exists()) {
-                    userData.createdAt = new Date();
-                }
-
-                await setDoc(userRef, userData, { merge: true });
-            } catch (error) {
-                console.error('Erreur sauvegarde info utilisateur:', error);
-            }
-        }
-
-        // Toggle accordion
         window.toggleAccordion = function(header) {
             const accordion = header.parentElement;
             accordion.classList.toggle('active');
         };
 
-        // Charger la liste des utilisateurs
-        async function loadUsersList() {
-            const usersList = document.getElementById('usersList');
-            usersList.innerHTML = '<p style="text-align: center; opacity: 0.7;">Chargement...</p>';
-
+        async function loadCategories() {
             try {
-                const usersSnapshot = await getDocs(collection(db, 'users'));
-                usersList.innerHTML = '';
-
-                if (usersSnapshot.empty) {
-                    usersList.innerHTML = '<p style="text-align: center; opacity: 0.7;">Aucun utilisateur inscrit</p>';
-                    return;
-                }
-
-                usersSnapshot.forEach((docData) => {
-                    const userData = docData.data();
-                    const isAdmin = userData.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-                    
-                    const userItem = document.createElement('div');
-                    userItem.className = 'user-list-item';
-                    userItem.innerHTML = `
-                        <div class="user-info-preview">
-                            <strong>${userData.displayName || 'Utilisateur'}</strong>
-                            ${isAdmin ? '<span class="user-badge badge-admin">ADMIN</span>' : '<span class="user-badge badge-member">MEMBRE</span>'}
-                            <small style="opacity: 0.7;">${userData.email}</small>
-                        </div>
-                        <span style="opacity: 0.5;">👁️</span>
-                    `;
-                    userItem.onclick = () => openUserModal(userData);
-                    usersList.appendChild(userItem);
+                const categoriesSnapshot = await getDocs(collection(db, 'categories'));
+                allCategories = [];
+                
+                categoriesSnapshot.forEach((docData) => {
+                    allCategories.push({
+                        id: docData.id,
+                        ...docData.data()
+                    });
                 });
+
+                allCategories.sort((a, b) => a.name.localeCompare(b.name));
+                updateCategoryChips();
+                updateCategorySelects();
+                updateCategoriesList();
             } catch (error) {
-                console.error('Erreur chargement utilisateurs:', error);
-                usersList.innerHTML = '<p style="color: #ff6b6b;">Erreur de chargement</p>';
+                console.error('Erreur chargement catégories:', error);
             }
         }
 
-        // Ouvrir le modal utilisateur
-        window.openUserModal = function(userData) {
-            selectedUserForEdit = userData;
-            document.getElementById('userModal').style.display = 'flex';
+        function updateCategoryChips() {
+            const categoryChips = document.getElementById('categoryChips');
+            categoryChips.innerHTML = '<div class="category-chip active" data-category="all">Tous les jeux</div>';
             
-            document.getElementById('modalUserName').textContent = userData.displayName || 'Non défini';
-            document.getElementById('modalUserEmail').textContent = userData.email;
-            document.getElementById('modalUserUid').textContent = userData.uid;
-            document.getElementById('modalUserCreated').textContent = userData.createdAt ? 
-                new Date(userData.createdAt.seconds * 1000).toLocaleString() : 'Non disponible';
-            document.getElementById('modalUserLastLogin').textContent = userData.lastLogin ? 
-                new Date(userData.lastLogin.seconds * 1000).toLocaleString() : 'Non disponible';
-            document.getElementById('modalUserPlatform').textContent = userData.platform || 'Non disponible';
-            document.getElementById('modalUserBrowser').textContent = userData.browser || 'Non disponible';
-            document.getElementById('modalUserIp').textContent = userData.ipAddress || 'Non disponible';
+            allCategories.forEach(cat => {
+                const chip = document.createElement('div');
+                chip.className = 'category-chip';
+                chip.dataset.category = cat.id;
+                chip.textContent = `${cat.icon || '📁'} ${cat.name}`;
+                chip.onclick = () => filterByCategory(cat.id);
+                categoryChips.appendChild(chip);
+            });
+        }
 
-            // Réinitialiser le formulaire
-            document.getElementById('editUserName').value = '';
-            document.getElementById('editUserEmail').value = '';
-            document.getElementById('editUserPassword').value = '';
-        };
+        function updateCategorySelects() {
+            const gameCategory = document.getElementById('gameCategory');
+            gameCategory.innerHTML = '<option value="">Sélectionner une catégorie</option>';
+            
+            allCategories.forEach(cat => {
+                const option = document.createElement('option');
+                option.value = cat.id;
+                option.textContent = `${cat.icon || '📁'} ${cat.name}`;
+                gameCategory.appendChild(option);
+            });
+        }
 
-        // Fermer le modal utilisateur
-        window.closeUserModal = function() {
-            document.getElementById('userModal').style.display = 'none';
-            selectedUserForEdit = null;
-        };
-
-        // Mettre à jour les infos utilisateur
-        window.updateUserInfo = async function() {
-            if (!selectedUserForEdit) return;
-
-            const newName = document.getElementById('editUserName').value.trim();
-            const newEmailValue = document.getElementById('editUserEmail').value.trim();
-            const newPass = document.getElementById('editUserPassword').value;
-
-            if (!newName && !newEmailValue && !newPass) {
-                alert('Veuillez remplir au moins un champ à modifier');
+        function updateCategoriesList() {
+            const categoriesList = document.getElementById('categoriesList');
+            if (!categoriesList) return;
+            
+            categoriesList.innerHTML = '';
+            
+            if (allCategories.length === 0) {
+                categoriesList.innerHTML = '<p style="text-align: center; opacity: 0.7;">Aucune catégorie créée</p>';
                 return;
             }
 
-            if (newPass && newPass.length < 6) {
-                alert('Le mot de passe doit contenir au moins 6 caractères');
+            allCategories.forEach(cat => {
+                const catItem = document.createElement('div');
+                catItem.className = 'category-list-item';
+                catItem.innerHTML = `
+                    <div>
+                        <strong>${cat.icon || '📁'} ${cat.name}</strong>
+                        ${cat.description ? `<p style="font-size: 0.85rem; opacity: 0.7; margin-top: 0.3rem;">${cat.description}</p>` : ''}
+                    </div>
+                    <button class="btn-small btn-delete" onclick="deleteCategory('${cat.id}', '${cat.name}')">🗑️</button>
+                `;
+                categoriesList.appendChild(catItem);
+            });
+        }
+
+        window.filterByCategory = function(categoryId) {
+            selectedCategory = categoryId;
+            
+            document.querySelectorAll('.category-chip').forEach(chip => {
+                chip.classList.remove('active');
+                if (chip.dataset.category === categoryId) {
+                    chip.classList.add('active');
+                }
+            });
+            
+            loadGames();
+        };
+
+        window.closeCategoryModal = function() {
+            document.getElementById('categoryModal').style.display = 'none';
+            document.getElementById('createCategoryForm').reset();
+        };
+
+        window.deleteCategory = async function(categoryId, categoryName) {
+            if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+                alert('Accès refusé');
+                return;
+            }
+
+            if (!confirm(`Êtes-vous sûr de vouloir supprimer la catégorie "${categoryName}" ?\n\nNote: Les jeux de cette catégorie ne seront pas supprimés.`)) {
                 return;
             }
 
             try {
-                const userRef = doc(db, 'users', selectedUserForEdit.uid);
-                const updateData = {};
-
-                if (newName) {
-                    updateData.displayName = newName;
-                }
-                if (newEmailValue) {
-                    updateData.email = newEmailValue;
-                }
-
-                await updateDoc(userRef, updateData);
-                
-                alert('✅ Modifications enregistrées!\n\nNote: Le mot de passe ne peut être modifié que par l\'utilisateur lui-même pour des raisons de sécurité Firebase.');
-                closeUserModal();
-                loadUsersList();
+                await deleteDoc(doc(db, 'categories', categoryId));
+                alert('Catégorie supprimée avec succès!');
+                loadCategories();
             } catch (error) {
                 alert('Erreur: ' + error.message);
             }
         };
 
-        // Supprimer un compte utilisateur
-        window.deleteUserAccount = async function() {
-            if (!selectedUserForEdit) return;
+        document.getElementById('createCategoryBtn')?.addEventListener('click', () => {
+            document.getElementById('categoryModal').style.display = 'flex';
+            closeSidebar();
+        });
 
-            const isAdmin = selectedUserForEdit.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-            if (isAdmin) {
-                alert('⚠️ Impossible de supprimer le compte administrateur!');
+        document.getElementById('createCategoryForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+                alert('Accès refusé');
                 return;
             }
 
-            if (!confirm(`⚠️ ATTENTION!\n\nÊtes-vous sûr de vouloir supprimer le compte de:\n${selectedUserForEdit.displayName || selectedUserForEdit.email}?\n\nCette action est IRRÉVERSIBLE!`)) {
-                return;
-            }
+            const categoryData = {
+                name: document.getElementById('categoryName').value.trim(),
+                icon: document.getElementById('categoryIcon').value.trim() || '📁',
+                description: document.getElementById('categoryDescription').value.trim(),
+                createdAt: new Date()
+            };
 
             try {
-                await deleteDoc(doc(db, 'users', selectedUserForEdit.uid));
-                alert('✅ Compte supprimé avec succès!\n\nNote: Les données d\'authentification Firebase nécessitent que l\'utilisateur se reconnecte pour être complètement supprimées.');
-                closeUserModal();
-                loadUsersList();
+                await addDoc(collection(db, 'categories'), categoryData);
+                alert('✅ Catégorie créée avec succès!');
+                closeCategoryModal();
+                loadCategories();
             } catch (error) {
                 alert('Erreur: ' + error.message);
             }
-        };
+        });
 
-        // Auth state observer
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             if (user) {
-                saveUserInfo(user);
                 document.getElementById('loginBtn').classList.add('hidden');
                 document.getElementById('hamburger').classList.remove('hidden');
                 document.getElementById('userInfo').classList.remove('hidden');
                 document.getElementById('userName').textContent = user.displayName || user.email.split('@')[0];
                 document.getElementById('userEmail').textContent = user.email;
                 
-                // Update sidebar
                 document.getElementById('sidebarUserName').textContent = user.displayName || user.email.split('@')[0];
                 document.getElementById('sidebarUserEmail').textContent = user.email;
                 
@@ -1128,11 +974,12 @@
                 if (isAdmin) {
                     document.getElementById('adminPanel').classList.remove('hidden');
                     document.getElementById('adminPanelBtn').classList.remove('hidden');
+                    document.getElementById('createCategoryBtn').classList.remove('hidden');
                     permissionBadge.innerHTML = '<span class="permission-badge badge-admin">👑 ADMINISTRATEUR</span>';
-                    loadUsersList();
                 } else {
                     document.getElementById('adminPanel').classList.add('hidden');
                     document.getElementById('adminPanelBtn').classList.add('hidden');
+                    document.getElementById('createCategoryBtn').classList.add('hidden');
                     permissionBadge.innerHTML = '<span class="permission-badge badge-member">👤 MEMBRE</span>';
                 }
                 
@@ -1144,10 +991,10 @@
                 document.getElementById('adminPanel').classList.add('hidden');
                 closeSidebar();
             }
+            loadCategories();
             loadGames();
         });
 
-        // Login/Register
         document.getElementById('loginBtn').addEventListener('click', () => {
             document.getElementById('authModal').style.display = 'flex';
         });
@@ -1186,7 +1033,6 @@
             }
         });
 
-        // Hamburger menu
         document.getElementById('hamburger').addEventListener('click', () => {
             const hamburger = document.getElementById('hamburger');
             const sidebar = document.getElementById('sidebar');
@@ -1220,12 +1066,10 @@
             document.getElementById('adminPanel').scrollIntoView({ behavior: 'smooth' });
         });
 
-        // Settings modal functions
         window.closeSettingsModal = () => {
             document.getElementById('settingsModal').style.display = 'none';
         };
 
-        // Update display name
         document.getElementById('updateNameBtn').addEventListener('click', async () => {
             const newName = document.getElementById('newDisplayName').value.trim();
             if (!newName) {
@@ -1242,7 +1086,6 @@
             }
         });
 
-        // Update email
         document.getElementById('updateEmailBtn').addEventListener('click', async () => {
             const newEmailValue = document.getElementById('newEmail').value.trim();
             if (!newEmailValue) {
@@ -1262,7 +1105,6 @@
             }
         });
 
-        // Update password
         document.getElementById('updatePasswordBtn').addEventListener('click', async () => {
             const currentPass = document.getElementById('currentPassword').value;
             const newPass = document.getElementById('newPassword').value;
@@ -1300,7 +1142,6 @@
             }
         });
 
-        // Add game (admin)
         document.getElementById('addGameForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
@@ -1308,8 +1149,15 @@
                 return;
             }
             
+            const categoryId = document.getElementById('gameCategory').value;
+            if (!categoryId) {
+                alert('Veuillez sélectionner une catégorie');
+                return;
+            }
+
             const gameData = {
                 title: document.getElementById('gameTitle').value,
+                category: categoryId,
                 image: document.getElementById('gameImage').value,
                 description: document.getElementById('gameDescription').value,
                 downloadUrl: document.getElementById('gameDownloadUrl').value,
@@ -1327,7 +1175,6 @@
             }
         });
 
-        // Load games
         async function loadGames() {
             const gamesGrid = document.getElementById('gamesGrid');
             gamesGrid.innerHTML = '';
@@ -1339,6 +1186,12 @@
                 
                 querySnapshot.forEach((docData) => {
                     const game = docData.data();
+                    
+                    if (selectedCategory !== 'all' && game.category !== selectedCategory) {
+                        return;
+                    }
+
+                    const categoryInfo = allCategories.find(cat => cat.id === game.category);
                     const avgRating = calculateAverageRating(game.reviews || []);
                     
                     const gameCard = document.createElement('div');
@@ -1347,6 +1200,7 @@
                         <img src="${game.image}" class="game-image" alt="${game.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22280%22 height=%22200%22%3E%3Crect fill=%22%2300d4ff%22 width=%22280%22 height=%22200%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2220%22 fill=%22white%22 text-anchor=%22middle%22 dy=%22.3em%22%3E${game.title}%3C/text%3E%3C/svg%3E'">
                         <div class="game-info">
                             <div class="game-title">${game.title}</div>
+                            ${categoryInfo ? `<div class="game-category-tag">${categoryInfo.icon || '📁'} ${categoryInfo.name}</div>` : ''}
                             <div class="game-rating">${displayStars(avgRating)} (${game.reviews?.length || 0} avis)</div>
                             ${isAdmin ? `
                                 <div class="game-actions">
@@ -1363,12 +1217,15 @@
                     });
                     gamesGrid.appendChild(gameCard);
                 });
+
+                if (gamesGrid.children.length === 0) {
+                    gamesGrid.innerHTML = '<p style="text-align: center; opacity: 0.7; grid-column: 1/-1;">Aucun jeu dans cette catégorie</p>';
+                }
             } catch (error) {
                 console.error('Erreur de chargement:', error);
             }
         }
 
-        // Delete game (admin only)
         window.deleteGame = async (gameId, gameTitle) => {
             if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
                 alert('Accès refusé');
@@ -1388,7 +1245,6 @@
             }
         };
 
-        // Edit game (admin only)
         window.editGame = async (gameId) => {
             if (!currentUser || currentUser.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
                 alert('Accès refusé');
@@ -1404,6 +1260,7 @@
 
                 const game = gameDoc.data();
                 document.getElementById('gameTitle').value = game.title;
+                document.getElementById('gameCategory').value = game.category || '';
                 document.getElementById('gameImage').value = game.image;
                 document.getElementById('gameDescription').value = game.description;
                 document.getElementById('gameDownloadUrl').value = game.downloadUrl;
@@ -1422,6 +1279,7 @@
                     
                     const updatedData = {
                         title: document.getElementById('gameTitle').value,
+                        category: document.getElementById('gameCategory').value,
                         image: document.getElementById('gameImage').value,
                         description: document.getElementById('gameDescription').value,
                         downloadUrl: document.getElementById('gameDownloadUrl').value,
@@ -1452,12 +1310,20 @@
             return stars + ` ${rating}`;
         }
 
-        // Game modal
         function openGameModal(gameId, game) {
             currentGameId = gameId;
             document.getElementById('gameModal').style.display = 'flex';
             document.getElementById('modalGameImage').src = game.image;
             document.getElementById('modalGameTitle').textContent = game.title;
+            
+            const categoryInfo = allCategories.find(cat => cat.id === game.category);
+            if (categoryInfo) {
+                document.getElementById('modalGameCategory').textContent = `${categoryInfo.icon || '📁'} ${categoryInfo.name}`;
+                document.getElementById('modalGameCategory').style.display = 'inline-block';
+            } else {
+                document.getElementById('modalGameCategory').style.display = 'none';
+            }
+            
             document.getElementById('modalGameDescription').textContent = game.description;
             document.getElementById('modalGameRating').textContent = displayStars(calculateAverageRating(game.reviews || []));
             
@@ -1480,7 +1346,6 @@
             document.getElementById('authModal').style.display = 'none';
         };
 
-        // Rating stars
         document.querySelectorAll('#ratingStars span').forEach(star => {
             star.addEventListener('click', (e) => {
                 selectedRating = parseInt(e.target.dataset.rating);
@@ -1494,7 +1359,6 @@
             });
         }
 
-        // Submit review
         document.getElementById('submitReviewBtn').addEventListener('click', async () => {
             if (!currentUser) {
                 alert('Vous devez être connecté pour laisser un avis');
@@ -1515,8 +1379,7 @@
                 userName: currentUser.displayName || currentUser.email.split('@')[0],
                 rating: selectedRating,
                 text: reviewText,
-                date: new Date().toLocaleDateString(),
-                adminResponse: null
+                date: new Date().toLocaleDateString()
             };
 
             try {
@@ -1542,44 +1405,6 @@
             }
         });
 
-        // Reply to review (admin only)
-        window.replyToReview = async function(reviewIndex) {
-            const replyText = document.getElementById(`replyText-${reviewIndex}`).value.trim();
-            
-            if (!replyText) {
-                alert('Veuillez écrire une réponse');
-                return;
-            }
-
-            try {
-                const gameRef = doc(db, 'games', currentGameId);
-                const gameDoc = await getDoc(gameRef);
-                
-                if (!gameDoc.exists()) {
-                    alert('Jeu non trouvé');
-                    return;
-                }
-
-                const gameData = gameDoc.data();
-                const reviews = gameData.reviews || [];
-                
-                reviews[reviewIndex].adminResponse = {
-                    text: replyText,
-                    date: new Date().toLocaleDateString(),
-                    adminName: currentUser.displayName || currentUser.email.split('@')[0]
-                };
-
-                await updateDoc(gameRef, { reviews: reviews });
-                
-                alert('Réponse publiée avec succès!');
-                displayReviews(reviews);
-                
-                loadGames();
-            } catch (error) {
-                alert('Erreur: ' + error.message);
-            }
-        };
-
         function displayReviews(reviews) {
             const reviewsList = document.getElementById('reviewsList');
             reviewsList.innerHTML = '<h3>Avis des joueurs</h3>';
@@ -1589,35 +1414,14 @@
                 return;
             }
 
-            const isAdmin = currentUser && currentUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-
-            reviews.forEach((review, index) => {
+            reviews.forEach((review) => {
                 const reviewItem = document.createElement('div');
                 reviewItem.className = 'review-item';
                 reviewItem.innerHTML = `
                     <strong>${review.userName}</strong> - ${displayStars(review.rating)}
                     <p>${review.text}</p>
                     <small>${review.date}</small>
-                    
-                    ${review.adminResponse ? `
-                        <div class="admin-response">
-                            <div class="admin-response-header">
-                                <span class="admin-response-badge">👑 ADMIN</span>
-                                <span>${review.adminResponse.adminName}</span>
-                            </div>
-                            <p>${review.adminResponse.text}</p>
-                            <small style="opacity: 0.7;">${review.adminResponse.date}</small>
-                        </div>
-                    ` : isAdmin ? `
-                        <div class="reply-form">
-                            <textarea id="replyText-${index}" placeholder="Répondre à cet avis..." rows="2"></textarea>
-                            <button class="btn-reply" onclick="replyToReview(${index})">💬 Publier la réponse</button>
-                        </div>
-                    ` : ''}
                 `;
                 reviewsList.appendChild(reviewItem);
             });
         }
-    </script>
-</body>
-</html>
